@@ -203,9 +203,7 @@ public class Pedigree {
      */
     public List<PedVertex> getVertices() {
         List<PedVertex> l = new ArrayList<>(vertices.values());
-        l.sort((arg0, arg1) -> {
-            return Integer.compare(arg0.id, arg1.id);
-        });
+        l.sort(Comparator.comparingInt(arg0 -> arg0.id));
         return l;
     }
 
@@ -802,6 +800,3 @@ public class Pedigree {
         return mates;
     }
 }
-
-
-

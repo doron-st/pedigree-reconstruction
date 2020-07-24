@@ -12,17 +12,16 @@ import java.util.List;
  * To change this template use File | Settings | File Templates.
  */
 public class Family implements Serializable {
-	private static final long serialVersionUID = 1289828664952209624L;
-	public Person mother;
-	public Person father;
-	public List<Person> siblings = new ArrayList<Person>();
-	public Double motherProbability=0.0;
-	public Double fatherProbability=0.0;
+    private static final long serialVersionUID = 1289828664952209624L;
+    public Person mother;
+    public Person father;
+    public List<Person> siblings = new ArrayList<Person>();
+    public Double motherProbability = 0.0;
+    public Double fatherProbability = 0.0;
 
 
-
-	@Override
-	public String toString() {
-		return "mother=" + mother + " ,father="+father;
-	}
+    @Override
+    public String toString() {
+        return "mother=" + mother + " ,father=" + father;
+    }
 }
