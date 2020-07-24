@@ -27,9 +27,6 @@ public class SibHypothesisTester extends RelationHypothesisTester {
      * Test all contracted founder nodes of pedigree for having one of the following relationships:
      * {fullsib,halfsib,parentChild,childParent,other}
      *
-     * @param ped
-     * @param cont
-     * @param gen
      * @return - The contracted relationship graph
      */
     public void run(Pedigree ped, Graph contractedRelationGraph, List<Vertex> candidates, int gen, Pedigree fullPed) {

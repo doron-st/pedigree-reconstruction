@@ -1,6 +1,5 @@
 package prepare;
 
-
 import graph.Graph;
 import graph.MyLogger;
 import graph.Vertex;

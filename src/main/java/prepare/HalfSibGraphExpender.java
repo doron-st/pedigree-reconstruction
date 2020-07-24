@@ -1,7 +1,7 @@
 package prepare;
 
 import graph.*;
-import misc.RelationshipProbWeight;
+import relationship.RelationshipProbWeight;
 import simulator.Pedigree;
 
 import java.util.ArrayList;
@@ -98,11 +98,9 @@ public class HalfSibGraphExpender {
 
 
     private void expandSibGroups() {
-        List<Vertex> innerList = new ArrayList<Vertex>();
+        List<Vertex> innerList = new ArrayList<>();
         for (Vertex sv : contractedGraph.getVertices()) {
-            for (Vertex sib : ((SuperVertex) sv.getData()).getInnerVertices()) {
-                innerList.add(sib);
-            }
+            innerList.addAll(((SuperVertex) sv.getData()).getInnerVertices());
         }
 
         expendedGraph = new Graph(innerList);
