@@ -10,5 +10,5 @@ import java.io.Serializable;
  * To change this template use File | Settings | File Templates.
  */
 public interface VertexData extends Serializable {
-    public Integer getId();
+    Integer getId();
 }

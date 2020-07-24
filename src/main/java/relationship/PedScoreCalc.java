@@ -1,14 +1,15 @@
 package relationship;
 
-import java.util.List;
-import java.util.Map;
-import misc.VecImpl;
-import jsat.classifiers.DataPoint;
-import jsat.linear.Vec;
-import simulator.Pedigree;
-import simulator.Pedigree.PedVertex;
 import graph.Edge;
 import graph.Graph;
+import jsat.classifiers.DataPoint;
+import jsat.linear.Vec;
+import misc.VecImpl;
+import simulator.Pedigree;
+import simulator.Pedigree.PedVertex;
+
+import java.util.List;
+import java.util.Map;
 
 public class PedScoreCalc extends PedLikelihoodCalcAbs {
 

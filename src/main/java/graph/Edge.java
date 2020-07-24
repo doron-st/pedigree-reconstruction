@@ -5,20 +5,20 @@ import java.io.Serializable;
 
 /**
  * Edge connect 2 vertices in a graph
- *
+ * <p>
  * User: moshe
  */
-public interface Edge extends Serializable{
-    public Vertex getVertex1();
+public interface Edge extends Serializable {
+    Vertex getVertex1();
 
-    public Vertex getVertex2();
+    Vertex getVertex2();
 
-    public Weight getWeight();
-    
-    public void setWeight(Weight w);
+    Weight getWeight();
 
-	public boolean isWeightHandled();
+    void setWeight(Weight w);
 
-	public void setWeightHandled(boolean b);
+    boolean isWeightHandled();
+
+    void setWeightHandled(boolean b);
 
 }

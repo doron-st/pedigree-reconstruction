@@ -3,15 +3,15 @@ package graph;
 
 /**
  * implementation of {@link Edge}
- *
+ * <p>
  * User: moshe
  */
 public class BaseEdge implements Edge {
-	private static final long serialVersionUID = -5577391332683063930L;
-	private Vertex vertex1 = null;
-    private Vertex vertex2 = null;
-    private Weight weight = null;
-    private boolean weightHandled=false;
+    private static final long serialVersionUID = -5577391332683063930L;
+    private final Vertex vertex1;
+    private final Vertex vertex2;
+    private Weight weight;
+    private boolean weightHandled = false;
 
     public BaseEdge(Vertex vertex1, Vertex vertex2, Weight weight) {
         this.vertex1 = vertex1;
@@ -31,18 +31,16 @@ public class BaseEdge implements Edge {
         return weight;
     }
 
-	@Override
-	public void setWeight(Weight weight) {
-		this.weight = weight;
-	}
+    public void setWeight(Weight weight) {
+        this.weight = weight;
+    }
 
-	@Override
-	public boolean isWeightHandled() {
-		return weightHandled;
-	}
-	@Override
-	public void setWeightHandled(boolean state) {
-		weightHandled=state;
-	}
+    public boolean isWeightHandled() {
+        return weightHandled;
+    }
+
+    public void setWeightHandled(boolean state) {
+        weightHandled = state;
+    }
 
 }

@@ -5,33 +5,33 @@ import java.io.Serializable;
 import java.util.Map;
 
 /**
- * Implemetation of Vertex in a graph
- *
+ * Implementation of Vertex in a graph
+ * <p>
  * User: moshe
  */
 public interface Vertex extends Serializable {
 
     // Each vertex should have an ID
-    public Integer getVertexId();
+    Integer getVertexId();
 
     // Edges from this vertex to another vertex.
     // map of the other vertex id to the edge itself
-    public Map<Integer, Edge> getEdgeMap();
+    Map<Integer, Edge> getEdgeMap();
 
     // Adding an edge from this vertex. The edge should already point to the other vertex
-    public void addEdge(Edge edge);
+    void addEdge(Edge edge);
 
     // The data of this vertex
-    public VertexData getData();
-    
-    public boolean hasEdgeTo(int vertexID);
+    VertexData getData();
 
-    public Edge getEdgeTo(int vertexID);
+    boolean hasEdgeTo(int vertexID);
 
-	public void removeEdgeTo(Vertex v);
+    Edge getEdgeTo(int vertexID);
 
-	public void setData(VertexData data);
+    void removeEdgeTo(Vertex v);
 
-	public void clearEdges();
+    void setData(VertexData data);
+
+    void clearEdges();
 
 }

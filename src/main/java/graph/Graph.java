@@ -1,43 +1,40 @@
 package graph;
 
-import java.io.Serializable;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
+import relationship.RelationshipProbWeight;
 
-import misc.RelationshipProbWeight;
+import java.io.Serializable;
+import java.util.*;
 
 
 /**
  * Graph implementation
- *
+ * <p>
  * User: moshe
  */
-public class Graph implements Serializable{
-	private static final long serialVersionUID = -2913752016824176357L;
-	private Map<Integer, Vertex> vertexMap = new HashMap<Integer, Vertex>();
+public class Graph implements Serializable {
+    private static final long serialVersionUID = -2913752016824176357L;
+    private final Map<Integer, Vertex> vertexMap = new HashMap<Integer, Vertex>();
 
-    public Graph(List<VertexData> verticesData){
-    	for(VertexData d : verticesData) {
-			BaseVertex vertex = new BaseVertex(d);
-			this.addVertex(vertex);
-			MyLogger.debug("Vertex " + d + " was added to graph");
-		}
+    public Graph(List<VertexData> verticesData) {
+        for (VertexData d : verticesData) {
+            BaseVertex vertex = new BaseVertex(d);
+            this.addVertex(vertex);
+            MyLogger.debug("Vertex " + d + " was added to graph");
+        }
     }
+
     /**
      * Assemble a graph from vertices, use existing vertices, no cloning
+     *
      * @param vertices
      */
-    public Graph(Collection<Vertex> vertices){
-    	for(Vertex v : vertices) {
-			this.addVertex(v);
-			MyLogger.info("Vertex " + v + " was added to graph");
-		}
+    public Graph(Collection<Vertex> vertices) {
+        for (Vertex v : vertices) {
+            this.addVertex(v);
+            MyLogger.info("Vertex " + v + " was added to graph");
+        }
     }
-    
+
     public void addVertex(Vertex v) {
         vertexMap.put(v.getVertexId(), v);
     }
@@ -47,12 +44,12 @@ public class Graph implements Serializable{
     }
 
     public void addEdge(Edge e) {
-    	Vertex v1 = e.getVertex1();
-    	Vertex v2 = e.getVertex2();
-        if(!vertexMap.containsKey(v1.getVertexId())) {
+        Vertex v1 = e.getVertex1();
+        Vertex v2 = e.getVertex2();
+        if (!vertexMap.containsKey(v1.getVertexId())) {
             throw new RuntimeException("Vertex doesn't exists in vertices map " + v1);
         }
-        if(!vertexMap.containsKey(v2.getVertexId())) {
+        if (!vertexMap.containsKey(v2.getVertexId())) {
             throw new RuntimeException("Vertex doesn't exists in vertices map " + v2);
         }
 
@@ -61,32 +58,32 @@ public class Graph implements Serializable{
 //        v2.addEdge(edge);
     }
 
-    public Edge getEdge(Integer vid1,Integer vid2) {
+    public Edge getEdge(Integer vid1, Integer vid2) {
         Vertex v1 = vertexMap.get(vid1);
         Vertex v2 = vertexMap.get(vid2);
-        if(v1 == null || v2 == null) {
+        if (v1 == null || v2 == null) {
             return null;
         }
-        return getEdge(v1,v2);
+        return getEdge(v1, v2);
     }
 
-    public Edge getUndirectedEdge(Integer vid1,Integer vid2) {
+    public Edge getUndirectedEdge(Integer vid1, Integer vid2) {
         Vertex v1 = vertexMap.get(vid1);
         Vertex v2 = vertexMap.get(vid2);
-        if(v1 == null || v2 == null) {
+        if (v1 == null || v2 == null) {
             return null;
         }
-        Edge e = getEdge(v1,v2);
-        if(e==null){
-        	e= getEdge(v2,v1);
-        	MyLogger.debug("no edge between"+vid1 + " and "+vid2);
+        Edge e = getEdge(v1, v2);
+        if (e == null) {
+            e = getEdge(v2, v1);
+            MyLogger.debug("no edge between" + vid1 + " and " + vid2);
         }
         return e;
     }
 
-    public Edge getEdge(Vertex v1,Vertex v2) {
-        for(Edge e : v1.getEdgeMap().values()){
-            if(e.getVertex2().getVertexId().equals(v2.getVertexId())) {
+    public Edge getEdge(Vertex v1, Vertex v2) {
+        for (Edge e : v1.getEdgeMap().values()) {
+            if (e.getVertex2().getVertexId().equals(v2.getVertexId())) {
                 return e;
             }
         }
@@ -96,10 +93,10 @@ public class Graph implements Serializable{
 
     public List<Vertex> verticesFromDatas(List<? extends VertexData> vertexDatas) {
         List<Vertex> vertexes = new ArrayList<Vertex>();
-        for(VertexData vertexData : vertexDatas) {
-        	
+        for (VertexData vertexData : vertexDatas) {
+
             Vertex vertex = getVertex(vertexData.getId());
-            if(vertex == null) {
+            if (vertex == null) {
                 throw new RuntimeException("Couldn't find a matching vertex to person " + vertexData);
             }
             vertexes.add(vertex);
@@ -109,18 +106,19 @@ public class Graph implements Serializable{
 
     public List<? extends VertexData> vertexDataFromVertices(List<Vertex> vertices) {
         List<VertexData> vertexDatas = new ArrayList<VertexData>();
-        for(Vertex vertex : vertices) {
+        for (Vertex vertex : vertices) {
             vertexDatas.add(vertex.getData());
         }
         return vertexDatas;
     }
-    public void removeVertex(Vertex v){
+
+    public void removeVertex(Vertex v) {
         List<Vertex> existingVertices = new ArrayList<Vertex>(getVertexMap().values());
-        for(Vertex u : existingVertices){
+        for (Vertex u : existingVertices) {
             Edge e;
-            if((e = getEdge(u, v)) != null)
+            if ((e = getEdge(u, v)) != null)
                 u.getEdgeMap().values().remove(e);
-            if((e = getEdge(v, u)) != null)
+            if ((e = getEdge(v, u)) != null)
                 v.getEdgeMap().values().remove(e);
 
         }
@@ -138,13 +136,12 @@ public class Graph implements Serializable{
                 " vertexMap=" + vertexMap.values() +
                 '}';
     }
-    
-	/**
-	 *
-	 * @param v1 - vertex
-	 * @param v2 - vertex
-	 * @return  true if the max prob of relatedness is not "unrelated"
-	 */
+
+    /**
+     * @param v1 - vertex
+     * @param v2 - vertex
+     * @return true if the max prob of relatedness is not "unrelated"
+     */
 	/*public Boolean isRelated(Vertex v1,Vertex v2,int degree) {
 		reconstruct.Edge e1 =  this.getEdge(v1,v2);
 		reconstruct.Edge e2 =  this.getEdge(v2,v1);
@@ -172,45 +169,51 @@ public class Graph implements Serializable{
 		return isRelated;
 	}
 	*/
-	public RelationshipProbWeight getWeight(Vertex v1, Vertex v2) {
-		Edge e = v1.getEdgeTo(v2.getVertexId());
-		if(e!=null)
-			return (RelationshipProbWeight) e.getWeight();
-		e= v2.getEdgeTo(v1.getVertexId());
-		if(e!= null)
-			return RelationshipProbWeight.switchWeightsDirection( (RelationshipProbWeight)e.getWeight());
-		return  null;
-	}
-	public List<Vertex> getVertices() {
-		Iterator<Vertex> iter = vertexMap.values().iterator();
-		List<Vertex> vertices = new ArrayList<Vertex>();
-		while(iter.hasNext())
-			vertices.add(iter.next());
-		return vertices;
-	}
-	public boolean hasVertex(int id) {
-		return vertexMap.keySet().contains(id);
-	}
-	public int getNumOfEdges() {
-		int numOfEdges=0;
-		for(Vertex v : getVertices()){
-			numOfEdges+=v.getEdgeMap().size();
-		}
-		return numOfEdges;
-	}
-	public List<VertexData> getVertexDataList() {
-		List<VertexData> l = new ArrayList<VertexData>();
-		for(Vertex v : getVertices()){
-			l.add(v.getData());
-		}
-		return l;
-	}
-	public void clearAllEdges() {
-		for(Vertex v : getVertices()){
-			v.clearEdges();
-		}
-	}
-	public void setVertexID(Vertex v, Integer id) {
-		vertexMap.put(id, v);
-	}
+    public RelationshipProbWeight getWeight(Vertex v1, Vertex v2) {
+        Edge e = v1.getEdgeTo(v2.getVertexId());
+        if (e != null)
+            return (RelationshipProbWeight) e.getWeight();
+        e = v2.getEdgeTo(v1.getVertexId());
+        if (e != null)
+            return RelationshipProbWeight.switchWeightsDirection((RelationshipProbWeight) e.getWeight());
+        return null;
+    }
+
+    public List<Vertex> getVertices() {
+        Iterator<Vertex> iter = vertexMap.values().iterator();
+        List<Vertex> vertices = new ArrayList<Vertex>();
+        while (iter.hasNext())
+            vertices.add(iter.next());
+        return vertices;
+    }
+
+    public boolean hasVertex(int id) {
+        return vertexMap.keySet().contains(id);
+    }
+
+    public int getNumOfEdges() {
+        int numOfEdges = 0;
+        for (Vertex v : getVertices()) {
+            numOfEdges += v.getEdgeMap().size();
+        }
+        return numOfEdges;
+    }
+
+    public List<VertexData> getVertexDataList() {
+        List<VertexData> l = new ArrayList<VertexData>();
+        for (Vertex v : getVertices()) {
+            l.add(v.getData());
+        }
+        return l;
+    }
+
+    public void clearAllEdges() {
+        for (Vertex v : getVertices()) {
+            v.clearEdges();
+        }
+    }
+
+    public void setVertexID(Vertex v, Integer id) {
+        vertexMap.put(id, v);
+    }
 }

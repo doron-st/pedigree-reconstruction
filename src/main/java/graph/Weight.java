@@ -1,9 +1,9 @@
 package graph;
 
-import java.io.Serializable;
-
 import jsat.classifiers.DataPoint;
 import jsat.linear.Vec;
+
+import java.io.Serializable;
 
 /**
  * Created with IntelliJ IDEA.
@@ -14,7 +14,7 @@ import jsat.linear.Vec;
  */
 public interface Weight extends Serializable {
 
-	DataPoint asDataPoint();
+    DataPoint asDataPoint();
 
-	Vec asVector();
+    Vec asVector();
 }

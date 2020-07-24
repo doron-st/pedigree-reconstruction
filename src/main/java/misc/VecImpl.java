@@ -2,48 +2,48 @@ package misc;
 
 import jsat.linear.Vec;
 
-public class VecImpl extends Vec{
+public class VecImpl extends Vec {
 
-	private static final long serialVersionUID = 1L;
-	private double [] arr;
-	
-	public VecImpl(double [] arr){
-		this.arr = arr;
-	}
-	
-	public VecImpl(double a, double b){
-		arr = new double[] {a,b};
-	}
-	
-	public VecImpl(double a) {
-		arr = new double[] {a};
-	}
+    private static final long serialVersionUID = 1L;
+    private final double[] arr;
 
-	@Override
-	public Vec clone() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public VecImpl(double[] arr) {
+        this.arr = arr;
+    }
 
-	@Override
-	public double get(int arg0) {
-		return arr[arg0];
-	}
+    public VecImpl(double a, double b) {
+        arr = new double[]{a, b};
+    }
 
-	@Override
-	public boolean isSparse() {
-		return false;
-	}
+    public VecImpl(double a) {
+        arr = new double[]{a};
+    }
 
-	@Override
-	public int length() {
-		return arr.length;
-	}
+    @Override
+    public Vec clone() {
+        // TODO Auto-generated method stub
+        return null;
+    }
 
-	@Override
-	public void set(int arg0, double arg1) {
-		arr[arg0] = arg1;
-		
-	}
+    @Override
+    public double get(int arg0) {
+        return arr[arg0];
+    }
+
+    @Override
+    public boolean isSparse() {
+        return false;
+    }
+
+    @Override
+    public int length() {
+        return arr.length;
+    }
+
+    @Override
+    public void set(int arg0, double arg1) {
+        arr[arg0] = arg1;
+
+    }
 
 }
