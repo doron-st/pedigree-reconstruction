@@ -66,7 +66,7 @@ public class WrightFisherSimulator {
         monogamyProb = args.getDouble("monogamyRate");
         outDir = args.getString("outputDir");
         popIncreaseRatio = Math.pow(finalPopSize / (double) initialPopSize, 1.0 / generations);
-        System.out.println("popIncreaseRatio=" + popIncreaseRatio);
+        MyLogger.info("popIncreaseRatio=" + popIncreaseRatio);
         MyLogger.important("monogamyProb=" + monogamyProb);
         genotypes = new Genotype[popSize];
         genders = new boolean[popSize];
@@ -92,12 +92,12 @@ public class WrightFisherSimulator {
 
         for (int geneneration = 1; geneneration < generations; geneneration++) {
             MyLogger.important("generation " + geneneration);
+            MyLogger.info("totalIndividuals: " + totalIndividuals);
             int nextPopSize = (int) Math.round(popSize * popIncreaseRatio);
+            MyLogger.info("new populationSize: " + nextPopSize);
             nextGenotypes = new Genotype[nextPopSize];
             nextGenders = new boolean[nextPopSize];
 
-            System.out.println("totalIndividuals=" + totalIndividuals);
-            System.out.println("new populationSize=" + nextPopSize);
             //Sample parents for each individual, and recombine to get new genotypes
             for (int i = 0; i < nextPopSize; i++) {
                 simulateIndividual(geneneration, i);
@@ -105,15 +105,11 @@ public class WrightFisherSimulator {
             incrementGeneration(nextPopSize);
         }
         pedWriter.close();
-
         totalIndividuals += popSize;
-
         writeOutputs();
-        MyLogger.debug("");
     }
 
     private void incrementGeneration(int nextPopSize) {
-        System.out.println("Move to next generation");
 
         for (int i = 0; i < popSize; i++)
             couples.set(i, null);
@@ -121,22 +117,23 @@ public class WrightFisherSimulator {
             couples.add(null);
 
         totalIndividuals += popSize;
-        System.out.println("totalIndividuals=" + totalIndividuals);
+        MyLogger.info("totalIndividuals: " + totalIndividuals);
         popSize = nextPopSize;
-        System.out.println("populationSize=" + popSize);
+        MyLogger.info("populationSize: " + popSize);
         genotypes = nextGenotypes;
         genders = nextGenders;
     }
 
-    private void simulateIndividual(int generation, int individualIndex) {
+    private void simulateIndividual(int generation, int indexInGeneration) {
+        int childId = totalIndividuals + popSize + indexInGeneration;
         boolean foundMates = false;
-        int parent = -1;
-        int mate = -1;
+        int parentId = -1;
+        int mateId = -1;
         //Find parents to individual i
         while (!foundMates) {
-            parent = randomGenerator.nextInt(popSize);
-            boolean parentGender = genders[parent];
-            List<Integer> mates = couples.get(parent);
+            parentId = randomGenerator.nextInt(popSize);
+            boolean parentGender = genders[parentId];
+            List<Integer> mates = couples.get(parentId);
 
             //Already has a mate (or mates)
             if (mates != null) {
@@ -150,17 +147,17 @@ public class WrightFisherSimulator {
 
                 if (randomGenerator.nextDouble() < monogamyProb) {//Passed monogamy test
                     foundMates = true;
-                    mate = mates.get(randomGenerator.nextInt(mates.size())); //sample from previous mates uniformly
-                    MyLogger.important("having another child with " + mate);
+                    mateId = mates.get(randomGenerator.nextInt(mates.size())); //sample from previous mates uniformly
+                    MyLogger.important(String.format("%d and %d now have another child: %d", parentId, mateId, childId));
 
                 } else//(Cheated)
-                    MyLogger.important("parent " + parent + " has an out of marraige child");
+                    MyLogger.important("parent " + parentId + " has an out of marraige child");
             }
             if (!foundMates) {
                 //If need new mate
-                mate = randomGenerator.nextInt(popSize);
-                boolean mateGender = genders[mate];
-                List<Integer> mateMates = couples.get(mate);
+                mateId = randomGenerator.nextInt(popSize);
+                boolean mateGender = genders[mateId];
+                List<Integer> mateMates = couples.get(mateId);
                 double agreeProb;
                 if (mateMates == null)
                     agreeProb = 1;
@@ -175,41 +172,40 @@ public class WrightFisherSimulator {
                     if (mateMates == null)
                         mateMates = new ArrayList<>();
 
-                    MyLogger.important(parent + " is having first child with " + mate);
-                    mates.add(mate);
-                    couples.set(parent, mates);
-                    mateMates.add(parent);
-                    couples.set(mate, mateMates);
+                    MyLogger.important(String.format("%d is having first child with %d: %s", parentId, mateId, childId));
+                    mates.add(mateId);
+                    couples.set(parentId, mates);
+                    mateMates.add(parentId);
+                    couples.set(mateId, mateMates);
                 }
             }
         }
         //Create child genotype from parent and mate
-        MyLogger.debug("recombine = " + genotypes[parent]);
-        MyLogger.debug("recombine = " + genotypes[mate]);
+        MyLogger.debug("recombine = " + genotypes[parentId]);
+        MyLogger.debug("recombine = " + genotypes[mateId]);
 
-        nextGenotypes[individualIndex] = new Genotype(genotypes[parent].recombine(), genotypes[mate].recombine());
-        nextGenders[individualIndex] = randomGenerator.nextBoolean();
+        nextGenotypes[indexInGeneration] = new Genotype(genotypes[parentId].recombine(), genotypes[mateId].recombine());
+        nextGenders[indexInGeneration] = randomGenerator.nextBoolean();
         int fatherId;
         int motherId;
-        if (genders[parent]) {
+        if (genders[parentId]) {
             //fatherId=totalIndividuals-(gen*popSize)+parent;
             //motherId=totalIndividuals-(gen*popSize)+mate;
-            fatherId = totalIndividuals + parent;
-            motherId = totalIndividuals + mate;
+            fatherId = totalIndividuals + parentId;
+            motherId = totalIndividuals + mateId;
         } else {
             //fatherId=totalIndividuals-(gen*popSize)+mate;
             //motherId=totalIndividuals-(gen*popSize)+parent;
-            fatherId = totalIndividuals + mate;
-            motherId = totalIndividuals + parent;
+            fatherId = totalIndividuals + mateId;
+            motherId = totalIndividuals + parentId;
         }
         //int id = (totalIndividuals-((gen+1)*popSize)+i);
-        int id = totalIndividuals + popSize + individualIndex;
-        MyLogger.important("Adding vertex " + id + " " + fatherId + " " + motherId);
-        MyLogger.debug("genotype = " + nextGenotypes[individualIndex]);
+        //MyLogger.important("Adding vertex " + childId + ", father: " + fatherId + ", mother: " + motherId);
+        MyLogger.debug("genotype = " + nextGenotypes[indexInGeneration]);
 
-        ped.addVertex(id, fatherId, motherId, false);
-        pedWriter.println(id + ":" + fatherId + "-" + motherId + " generation:" + (generations - generation));
-        structure.put(id + "\t" + fatherId + "\t" + motherId, (generations - generation));
+        ped.addVertex(childId, fatherId, motherId, false);
+        pedWriter.println(childId + ":" + fatherId + "-" + motherId + " generation:" + (generations - generation));
+        structure.put(childId + "\t" + fatherId + "\t" + motherId, (generations - generation));
     }
 
     private void writeOutputs() {
