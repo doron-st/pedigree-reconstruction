@@ -5,7 +5,7 @@
     <modelVersion>4.0.0</modelVersion>
 
     <groupId>org.tau</groupId>
-    <artifactId>pedigree-reconstruction</artifactId>
+    <artifactId>prepare.pedigree-reconstruction</artifactId>
     <version>1.0-SNAPSHOT</version>
 
     <properties>
