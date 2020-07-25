@@ -1,7 +1,5 @@
 package common;
 
-import common.Genotype;
-import common.Haplotype;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;

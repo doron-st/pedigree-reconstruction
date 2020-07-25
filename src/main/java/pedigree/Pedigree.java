@@ -45,55 +45,6 @@ public class Pedigree {
     }
 
     /**
-     * Create a sub-pedigree from all of the ancestors of the descendants of f1&f2
-     *
-     * @param f1              - first node
-     * @param f2              - second node
-     * @param idConversion    - A mapping of template vertexIDs to original vertex IDs
-     * @param enumartionTable -  A mapping of original vertexIDs to template vertex IDs
-     * @return the sub pedigree
-     */
-    public Pedigree extractSubPedigree(PedVertex f1, PedVertex f2, Map<Integer, Integer> idConversion, Map<Integer, Integer> enumartionTable) {
-        List<PedVertex> descendants = new ArrayList<>();
-
-        if (f1.getChildren().size() > f2.getChildren().size()) {
-            addDescendantsToList(f1, descendants, false);
-            addDescendantsToList(f2, descendants, false);
-        } else {
-            addDescendantsToList(f2, descendants, false);
-            addDescendantsToList(f1, descendants, false);
-
-        }
-        List<PedVertex> desAncestry = new ArrayList<>();
-        List<Integer> degrees = new ArrayList<>();
-        for (PedVertex desc : descendants) {
-            addAncestry(desc, 0, desAncestry, degrees);
-        }
-
-        //Number the vertices by order of discovery
-        int i = 1;
-        for (PedVertex v : desAncestry) {
-            enumartionTable.put(v.id, i);
-            i++;
-        }
-        enumartionTable.put(-1, -1);
-
-
-        //Fill conversion table, that convert enumation back to the real IDs
-        idConversion.put(-1, -1);
-        for (Integer id : enumartionTable.keySet()) {
-            idConversion.put(enumartionTable.get(id), id);
-        }
-
-        Pedigree subPed = new Pedigree();
-
-        //MyLogger.debug("Create pedigree from list " + desAncestry);
-        //Add vertices to pedigree, top->bottom order
-        subPed.createPedigreeFromList(desAncestry, enumartionTable);
-        return subPed;
-    }
-
-    /**
      * For debugging purposes
      */
     public Pedigree extractSubPedigreeNoConversion(PedVertex f1, PedVertex f2, Map<Integer, Integer> idConversion) {
@@ -309,7 +260,7 @@ public class Pedigree {
     }
 
     public String toString() {
-        StringBuilder result = new StringBuilder("\n");
+        StringBuilder result = new StringBuilder();
         for (PedVertex v : getVertices())
             result.append(v).append(",");
         return result.toString();
