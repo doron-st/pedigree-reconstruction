@@ -5,8 +5,8 @@ import graph.Graph;
 import jsat.classifiers.DataPoint;
 import jsat.linear.Vec;
 import misc.VecImpl;
-import simulator.Pedigree;
-import simulator.Pedigree.PedVertex;
+import pedigree.Pedigree;
+import pedigree.Pedigree.PedVertex;
 
 import java.util.List;
 import java.util.Map;
@@ -42,7 +42,7 @@ public class PedScoreCalc extends PedLikelihoodCalcAbs {
 
                     if (v1.getId() >= v2.getId()) continue;//Do only one side calculation
 
-                    String pairID = p.getDemographics().getIDString(v1.getId()) + "." + p.getDemographics().getIDString(v2.getId());
+                    String pairID = p.getPopulation().getIDString(v1.getId()) + "." + p.getPopulation().getIDString(v2.getId());
                     Vec simFeatures = simDataSets.get(pairID).get(0).getNumericalValues();
                     Vec obsFeatures = new VecImpl(0, 0);
                     Edge e = IBDGraph.getUndirectedEdge(v1.getId(), v2.getId());

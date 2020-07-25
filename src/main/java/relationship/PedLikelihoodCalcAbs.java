@@ -8,8 +8,8 @@ import jsat.distributions.multivariate.MetricKDE;
 import jsat.distributions.multivariate.MultivariateKDE;
 import jsat.linear.distancemetrics.EuclideanDistance;
 import prepare.IBDFeaturesWeight;
-import simulator.Pedigree;
-import simulator.Pedigree.PedVertex;
+import pedigree.Pedigree;
+import pedigree.Pedigree.PedVertex;
 
 import javax.management.RuntimeErrorException;
 import java.util.ArrayList;

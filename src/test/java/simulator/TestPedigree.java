@@ -2,6 +2,7 @@ package simulator;
 
 import graph.MyLogger;
 import org.junit.Test;
+import pedigree.Pedigree;
 
 import java.util.HashMap;
 import java.util.Map;

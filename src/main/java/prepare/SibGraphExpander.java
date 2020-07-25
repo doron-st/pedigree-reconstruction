@@ -2,7 +2,7 @@ package prepare;
 
 import graph.*;
 import relationship.RelationshipProbWeight;
-import simulator.Pedigree;
+import pedigree.Pedigree;
 
 import java.util.*;
 

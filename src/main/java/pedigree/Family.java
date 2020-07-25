@@ -15,7 +15,7 @@ public class Family implements Serializable {
     private static final long serialVersionUID = 1289828664952209624L;
     public Person mother;
     public Person father;
-    public List<Person> siblings = new ArrayList<Person>();
+    public List<Person> siblings = new ArrayList<>();
     public Double motherProbability = 0.0;
     public Double fatherProbability = 0.0;
 

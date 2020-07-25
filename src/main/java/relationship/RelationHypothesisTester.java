@@ -3,8 +3,8 @@ package relationship;
 import graph.*;
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 import org.apache.commons.math3.distribution.NormalDistribution;
-import simulator.Pedigree;
-import simulator.Pedigree.PedVertex;
+import pedigree.Pedigree;
+import pedigree.Pedigree.PedVertex;
 
 import java.util.ArrayList;
 import java.util.List;

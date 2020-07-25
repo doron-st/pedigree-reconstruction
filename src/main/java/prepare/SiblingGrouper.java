@@ -5,7 +5,7 @@ import graph.SimpleGraph.SimpleVertex;
 import pedigree.NucFamily;
 import pedigree.Person;
 import relationship.RelationshipProbWeight;
-import simulator.Pedigree;
+import pedigree.Pedigree;
 
 import java.util.*;
 

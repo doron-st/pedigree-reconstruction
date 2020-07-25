@@ -1,10 +1,11 @@
-package simulator;
+package evaluation;
 
 import graph.MyLogger;
 import graph.VertexData;
 import pedigree.Person;
-import prepare.Demographics;
+import prepare.Population;
 import prepare.PedAccuracy;
+import pedigree.Pedigree;
 
 import java.io.IOException;
 import java.util.List;
@@ -21,9 +22,9 @@ public class ScorePedigreeMinDistance {
         Pedigree inferredPed;
         try {
             List<VertexData> persons = Person.listFromDemograph(demographFilename);
-            Demographics demographics = new Demographics(persons);
-            inferredPed = new Pedigree(demographics, true);
-            realPed = new Pedigree(demographics, true);
+            Population population = new Population(persons);
+            inferredPed = new Pedigree(population, true);
+            realPed = new Pedigree(population, true);
         } catch (IOException e) {
             throw new RuntimeException("Error...", e);
         }

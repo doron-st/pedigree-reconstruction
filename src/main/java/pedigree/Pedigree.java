@@ -1,8 +1,9 @@
-package simulator;
+package pedigree;
 
 import graph.MyLogger;
-import pedigree.Person;
-import prepare.Demographics;
+import prepare.Population;
+import simulator.Genotype;
+import simulator.Haplotype;
 
 import java.io.*;
 import java.util.*;
@@ -12,10 +13,10 @@ public class Pedigree {
     private final Map<Integer, PedVertex> vertices = new HashMap<>();
     private final Map<PedVertex, Genotype> genotypes = new HashMap<>();
     private int largestID;
-    private Demographics demographics;
+    private Population population;
 
-    public Pedigree(Demographics dem, boolean convertToStringID) {
-        this.demographics = dem;
+    public Pedigree(Population dem, boolean convertToStringID) {
+        this.population = dem;
         for (Integer id : dem.getIDs()) {
             if (convertToStringID)
                 id = Integer.valueOf(dem.getPerson(id).getIdString());
@@ -298,8 +299,8 @@ public class Pedigree {
         return living;
     }
 
-    public Demographics getDemographics() {
-        return demographics;
+    public Population getPopulation() {
+        return population;
     }
 
     public void calcExpectedFounderAges(int generation) {
@@ -412,7 +413,7 @@ public class Pedigree {
     /**
      * Write pedigree using demographic IDs if they exist (Real populations)
      */
-    public void writeToFile(File file, Demographics dem) throws IOException {
+    public void writeToFile(File file, Population dem) throws IOException {
         MyLogger.important("Writing pedigree to file: " + file);
         PrintWriter printWriter = new PrintWriter(file);
         for (PedVertex v : getVertices()) {
@@ -492,8 +493,8 @@ public class Pedigree {
     private int handleDemographics(int id, int generation) {
         //	MyLogger.important("handle demographics: " + id);
 
-        if (demographics.getPerson(id) != null)
-            return demographics.getAge(id);
+        if (population.getPerson(id) != null)
+            return population.getAge(id);
 
         int sumAge = 0;
         boolean isMale = true;
@@ -505,13 +506,13 @@ public class Pedigree {
                 isMale = false;
         }
         int avgAge = sumAge / v.getChildren().size();
-        if (demographics.getPerson(id) == null) {
+        if (population.getPerson(id) == null) {
             Person p = new Person(id, String.valueOf(id), avgAge + 20, isMale, generation);
-            demographics.addPerson(p);
+            population.addPerson(p);
             //	MyLogger.important("Added person" + p);
         } else {
-            demographics.setAge(v.getId(), avgAge + 20);
-            MyLogger.info("Updated age of person" + demographics.getPerson(v.getId()));
+            population.setAge(v.getId(), avgAge + 20);
+            MyLogger.info("Updated age of person" + population.getPerson(v.getId()));
         }
         return avgAge + 20;
     }

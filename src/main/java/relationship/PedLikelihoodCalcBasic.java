@@ -6,8 +6,8 @@ import jsat.classifiers.DataPoint;
 import jsat.distributions.multivariate.MultivariateKDE;
 import jsat.linear.Vec;
 import misc.VecImpl;
-import simulator.Pedigree;
-import simulator.Pedigree.PedVertex;
+import pedigree.Pedigree;
+import pedigree.Pedigree.PedVertex;
 
 import java.util.HashMap;
 import java.util.List;

@@ -8,11 +8,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class Demographics {
+public class Population {
     private final Map<Integer, Person> idToPerson = new HashMap<>();
     private final Map<String, Person> idStrToPerson = new HashMap<>();
 
-    public Demographics(List<VertexData> persons) {
+    public Population(List<VertexData> persons) {
         for (VertexData p : persons) {
             addPerson((Person) p);
         }

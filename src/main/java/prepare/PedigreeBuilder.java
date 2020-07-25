@@ -11,7 +11,7 @@ import pedigree.Person;
 import relationship.CommonParentHypothesisTester;
 import relationship.RelationshipProbWeight;
 import relationship.SibHypothesisTester;
-import simulator.Pedigree;
+import pedigree.Pedigree;
 
 import java.io.File;
 import java.io.IOException;
@@ -45,7 +45,7 @@ public class PedigreeBuilder {
     /**
      * Main method - using actual pedigree for IBD sharing estimation
      */
-    public void buildGeneration(Pedigree ped, int gen, Pedigree fullPed, Demographics dem) {
+    public void buildGeneration(Pedigree ped, int gen, Pedigree fullPed, Population dem) {
 
         this.generation = gen;
         Graph IBDGraph = graph;

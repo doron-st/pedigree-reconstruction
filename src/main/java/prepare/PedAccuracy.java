@@ -1,7 +1,7 @@
 package prepare;
 
 import graph.MyLogger;
-import simulator.Pedigree;
+import pedigree.Pedigree;
 
 public class PedAccuracy {
 

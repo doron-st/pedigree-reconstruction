@@ -8,7 +8,7 @@ import javax.management.RuntimeErrorException;
 import java.util.*;
 
 /**
- * Processes functions of Numclear Families
+ * Processes functions of Nuclear Families
  */
 public class NuclearFamilyCreator {
 
@@ -19,7 +19,7 @@ public class NuclearFamilyCreator {
 
     public NuclearFamilyCreator(Graph graph, int generation, NextIDGenerator nextIDGen) {
         this.graph = graph;
-        this.allFamilies = new ArrayList<NucFamily>();
+        this.allFamilies = new ArrayList<>();
         this.generation = generation;
         this.nextIDGen = nextIDGen;
     }
@@ -28,18 +28,16 @@ public class NuclearFamilyCreator {
     /**
      * Check consistency of nuclear families,
      * break into two families when needed
-     *
-     * @param siblingGroups
      */
     public List<NucFamily> createNuclearFamilies(List<List<Vertex>> siblingGroups, boolean doingHirarchialClustering) {
 
-        List<NucFamily> nucFamilies = new ArrayList<NucFamily>();
+        List<NucFamily> nucFamilies = new ArrayList<>();
         NucFamiliyCreationStat nucFamiliyCreationStat = new NucFamiliyCreationStat();
         for (List<Vertex> siblingsGroup : siblingGroups) {
             // Its easier working with persons and not with Vertices
             List<Person> siblingsPersons = personsFromVertices(siblingsGroup);
 
-            Boolean areAllSiblingFromPreviosGeneration = true;
+            boolean areAllSiblingFromPreviosGeneration = true;
             for (Person p : siblingsPersons) {
                 if (p.getDiscoveryGeneration() != (generation - 1)) {
                     areAllSiblingFromPreviosGeneration = false;
@@ -59,7 +57,7 @@ public class NuclearFamilyCreator {
 
 
     public List<List<Vertex>> getSiblingGroups() {
-        List<List<Vertex>> siblingGroups = new ArrayList<List<Vertex>>();
+        List<List<Vertex>> siblingGroups = new ArrayList<>();
         List<List<Person>> lists = getSiblingGroupsAsPersons();
         for (List<Person> persons : lists) {
             try {
@@ -86,25 +84,23 @@ public class NuclearFamilyCreator {
             }
         }
 
-
-        String s = "Sibling Statistics: ";
-
-        for (Integer i = 1; i < sizes.length; ++i) {
-            s += "[#sibs:" + i + " #groups " + sizes[i] + "] ";
+        StringBuilder s = new StringBuilder("Sibling Statistics: ");
+        for (int i = 1; i < sizes.length; ++i) {
+            s.append("[#sibs:").append(i).append(" #groups ").append(sizes[i]).append("] ");
         }
 
-        MyLogger.important(s);
+        MyLogger.important(s.toString());
     }
 
     private void createNucFamilyForSiblings(List<NucFamily> nucFamilies, List<Person> siblingsPersons,
                                             NucFamiliyCreationStat nucFamiliyCreationStat, int discoveryGeneration) {
 
-        List<NucFamily> newNucFamilies = new ArrayList<NucFamily>();
+        List<NucFamily> newNucFamilies = new ArrayList<>();
         //
-        // Init a map of mother to all her childs and the same for fathers
+        // Init a map of mother to all her children and the same for fathers
         //
-        Map<Person, List<Person>> motherToSiblings = new HashMap<Person, List<Person>>();
-        Map<Person, List<Person>> fatherToSiblings = new HashMap<Person, List<Person>>();
+        Map<Person, List<Person>> motherToSiblings = new HashMap<>();
+        Map<Person, List<Person>> fatherToSiblings = new HashMap<>();
         Person deadMother = null;
         Person deadFather = null;
         MyLogger.info("Create nuclear family from :" + siblingsPersons.toString());
@@ -155,10 +151,10 @@ public class NuclearFamilyCreator {
             }
 
             if (!motherToSiblings.containsKey(mother)) {
-                motherToSiblings.put(mother, new ArrayList<Person>());
+                motherToSiblings.put(mother, new ArrayList<>());
             }
             if (!fatherToSiblings.containsKey(father)) {
-                fatherToSiblings.put(father, new ArrayList<Person>());
+                fatherToSiblings.put(father, new ArrayList<>());
             }
             motherToSiblings.get(mother).add(sibling);
             fatherToSiblings.get(father).add(sibling);
@@ -213,21 +209,22 @@ public class NuclearFamilyCreator {
             Person mother1 = motherIterator.next();
             Person mother2 = motherIterator.next();
 
-            if (motherToSiblings.get(mother1).equals(fatherToSiblings.get(father1)) &&
-                    motherToSiblings.get(mother2).equals(fatherToSiblings.get(father2))) {
-                // Great - matching between the groups
-            } else if (motherToSiblings.get(mother2).equals(fatherToSiblings.get(father1)) &&
-                    motherToSiblings.get(mother1).equals(fatherToSiblings.get(father2))) {
-                // switching mother1 and mother 2
-                Person tempMother = mother1;
-                mother1 = mother2;
-                mother2 = tempMother;
-            } else {
-                MyLogger.error("father1=" + father1);
-                MyLogger.error("father2=" + father2);
-                MyLogger.error("mother1=" + mother1);
-                MyLogger.error("mother2=" + mother2);
-                //throw new RuntimeException("Multiple parents are mixed up. need to check exact mixup");
+            // No matching between the groups
+            if (!motherToSiblings.get(mother1).equals(fatherToSiblings.get(father1)) ||
+                    !motherToSiblings.get(mother2).equals(fatherToSiblings.get(father2))) {
+                if (motherToSiblings.get(mother2).equals(fatherToSiblings.get(father1)) &&
+                        motherToSiblings.get(mother1).equals(fatherToSiblings.get(father2))) {
+                    // switching mother1 and mother 2
+                    Person tempMother = mother1;
+                    mother1 = mother2;
+                    mother2 = tempMother;
+                } else {
+                    MyLogger.error("father1=" + father1);
+                    MyLogger.error("father2=" + father2);
+                    MyLogger.error("mother1=" + mother1);
+                    MyLogger.error("mother2=" + mother2);
+                    //throw new RuntimeException("Multiple parents are mixed up. need to check exact mixup");
+                }
             }
 
 
@@ -245,7 +242,7 @@ public class NuclearFamilyCreator {
             MyLogger.important("NucFamilyCreator::create nuclear family: " + newNucFamily);
             for (Vertex mainSib : verticesFromPersons(newNucFamily.siblings)) {
                 Person mainSibPerson = ((Person) mainSib.getData());
-                mainSibPerson.getFamily().siblings = new ArrayList<Person>();
+                mainSibPerson.getFamily().siblings = new ArrayList<>();
                 for (Person sib : newNucFamily.siblings) {
                     if (!sib.equals(mainSibPerson)) {
                         mainSibPerson.getFamily().siblings.add(sib);
@@ -285,7 +282,7 @@ public class NuclearFamilyCreator {
 
     //Returns unsorted list of sibling groups
     private List<List<Person>> getSiblingGroupsAsPersons() {
-        List<List<Person>> siblingGroups = new ArrayList<List<Person>>();
+        List<List<Person>> siblingGroups = new ArrayList<>();
         Integer i = 0;
         for (Vertex vertex : graph.getVertexMap().values()) {
             ++i;
@@ -295,7 +292,7 @@ public class NuclearFamilyCreator {
             // This is just a sanity check
             verifySiblings(siblings);
 
-            List<Person> siblingsWithPerson = new ArrayList<Person>(siblings);
+            List<Person> siblingsWithPerson = new ArrayList<>(siblings);
             siblingsWithPerson.add(person);
 
             if (isSiblingsAlreadyInList(siblingsWithPerson, siblingGroups)) {
@@ -319,12 +316,9 @@ public class NuclearFamilyCreator {
     }
 
     private Boolean isSiblingsAlreadyInList(List<Person> siblings, List<List<Person>> siblingGroups) {
-        Set<Person> set1 = new HashSet<Person>();
-        set1.addAll(siblings);
+        Set<Person> set1 = new HashSet<>(siblings);
         for (List<Person> siblingGroup : siblingGroups) {
-            Set<Person> set2 = new HashSet<Person>();
-            set2.addAll(siblingGroup);
-
+            Set<Person> set2 = new HashSet<>(siblingGroup);
             if (set1.equals(set2)) {
                 return true;
             }
@@ -339,17 +333,17 @@ public class NuclearFamilyCreator {
      * @param siblings list of persons who are siblings
      */
     private void verifySiblings(List<Person> siblings) {
-        Integer i = 0;
+        int i = 0;
 
         while (i < siblings.size() - 1) {
-            Integer firstPersonIndex = i;
-            Integer secondPersonIndex = firstPersonIndex + 1;
+            int firstPersonIndex = i;
+            int secondPersonIndex = firstPersonIndex + 1;
             Person p1 = siblings.get(firstPersonIndex);
             Person p2 = siblings.get(secondPersonIndex);
-            List<Person> sibsWithPerson1 = new ArrayList<Person>(p1.getFamily().siblings);
+            List<Person> sibsWithPerson1 = new ArrayList<>(p1.getFamily().siblings);
             sibsWithPerson1.add(p1);
             Collections.sort(sibsWithPerson1);
-            List<Person> sibsWithPerson2 = new ArrayList<Person>(p2.getFamily().siblings);
+            List<Person> sibsWithPerson2 = new ArrayList<>(p2.getFamily().siblings);
             sibsWithPerson2.add(p2);
             Collections.sort(sibsWithPerson2);
 

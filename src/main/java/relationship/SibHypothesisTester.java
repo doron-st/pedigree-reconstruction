@@ -2,8 +2,8 @@ package relationship;
 
 import graph.*;
 import prepare.Contraction;
-import simulator.Pedigree;
-import simulator.Pedigree.PedVertex;
+import pedigree.Pedigree;
+import pedigree.Pedigree.PedVertex;
 
 import java.util.HashMap;
 import java.util.List;
@@ -142,7 +142,7 @@ public class SibHypothesisTester extends RelationHypothesisTester {
                 //	printSibDebugInfo(fullPed, numOfSibs,ped,s1, s2,likelihoods, sibLikelihood,false);//full-sibs
                 //printSibDebugInfo(fullPed, numOfHalfSibs, s1, s2,likelihoods, halfSibLikelihood,true);//half-sibs
 
-                if (mateID == -2 && ped.getDemographics().getAge(f1.getId()) > ped.getDemographics().getAge(f2.getId()))
+                if (mateID == -2 && ped.getPopulation().getAge(f1.getId()) > ped.getPopulation().getAge(f2.getId()))
                     f1Parent = true;
                 //printParentInfo(parentChildLikelihood,likelihoods,s1, s2,fullPed,ped,f1Parent,mateID);
 
@@ -156,7 +156,7 @@ public class SibHypothesisTester extends RelationHypothesisTester {
                 if (isMaxFromArray(avuncularLikelihood, likelihoods)) ;
 
                 if (gen == 1) {
-                    if (ped.getDemographics().getAge(f1.getId()) <= ped.getDemographics().getAge(f2.getId()))
+                    if (ped.getPopulation().getAge(f1.getId()) <= ped.getPopulation().getAge(f2.getId()))
                         w.setProb("parent", parentChildLikelihood);
                     else
                         w.setProb("child", parentChildLikelihood);

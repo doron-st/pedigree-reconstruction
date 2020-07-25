@@ -3,8 +3,12 @@ package prepare;
 import graph.Graph;
 import graph.MyLogger;
 import graph.VertexData;
+import net.sourceforge.argparse4j.ArgumentParsers;
+import net.sourceforge.argparse4j.impl.Arguments;
+import net.sourceforge.argparse4j.inf.ArgumentParser;
+import net.sourceforge.argparse4j.inf.Namespace;
 import pedigree.Person;
-import simulator.Pedigree;
+import pedigree.Pedigree;
 
 import java.io.IOException;
 import java.util.List;
@@ -12,45 +16,56 @@ import java.util.List;
 
 public class Prepare {
 
-    public static void main(String[] args) {
-        String IBDFile = args[0];
-        // demographics file
-        String demographFilename = args[1];
-        // output dir
-        String out = args[2];
+    private static Namespace parseArgs(String[] argv) {
+        ArgumentParser parser = ArgumentParsers.newArgumentParser(Prepare.class.getSimpleName())
+                .defaultHelp(true)
+                .description("PREPARE - Pedigree Reconstruction from Extant Population using Partitioning of RElatives");
 
-        boolean polygamous = false;
-        boolean phasedInput = false;
-        if (args.length == 4 && args[3].equals("-pol") || args.length == 5 && (args[4].equals("-pol") || args[4].equals("-pol"))) {
-            polygamous = true;
+        parser.addArgument("ibdFile");
+        parser.addArgument("demographicsFile");
+        parser.addArgument("outDir");
+        parser.addArgument("-polygamous")
+                .setDefault("false")
+                .action(Arguments.storeTrue())
+                .help("use polygamous model");
+        parser.addArgument("-phased")
+                .setDefault("false")
+                .action(Arguments.storeTrue())
+                .help("phased input");
+        return parser.parseArgsOrFail(argv);
+    }
+
+    public static void main(String[] argv) {
+        Namespace args = parseArgs(argv);
+
+        boolean polygamous = args.getBoolean("polygamous");
+        boolean phasedInput = args.getBoolean("phased");
+        String demographFilename = args.getString("demographicsFile");
+        String ibdFile = args.getString("ibdFile");
+        String out = args.getString("outDir");
+
+        if (polygamous)
             MyLogger.important("Polygamous mode!");
-        } else {
+        else
             MyLogger.important("Monogamous mode!");
-
-        }
-        if (args.length == 4 && args[3].equals("-phased") || args.length == 5 && (args[4].equals("-phased") || args[4].equals("-phased"))) {
-            phasedInput = true;
+        if (phasedInput)
             MyLogger.important("Phased input mode!");
-        } else {
+        else
             MyLogger.important("Unphased input mode!");
-
-        }
-
 
         Pedigree ped;
         Graph IBDgraph;
-        Demographics demographics;
+        Population population;
         try {
             List<VertexData> persons = Person.listFromDemograph(demographFilename);
-            demographics = new Demographics(persons);
+            population = new Population(persons);
             IBDgraph = new Graph(persons);
             MyLogger.info("====================Adding IBD Features edges===============================");
-            IBDFeaturesWeight.readEdgesWeights(IBDgraph, IBDFile, demographics);// Adding edges to the graph
+            IBDFeaturesWeight.readEdgesWeights(IBDgraph, ibdFile, population);// Adding edges to the graph
             MyLogger.info("Graph is " + IBDgraph);
-            ped = new Pedigree(demographics, false);
-
+            ped = new Pedigree(population, false);
         } catch (IOException e) {
-            throw new RuntimeException("Error...", e);
+            throw new RuntimeException(e);
         }
 
         int generation = 1;
@@ -73,7 +88,7 @@ public class Prepare {
 
         for (int gen = generation; gen <= 4; gen++) {
             PedigreeBuilder pedBuilder = new PedigreeBuilder(IBDgraph, out + gen, polygamous, synchronous, phasedInput);
-            pedBuilder.buildGeneration(ped, gen, fullPed, demographics);
+            pedBuilder.buildGeneration(ped, gen, fullPed, population);
         }
     }
 }

@@ -40,7 +40,7 @@ public class IBDFeaturesWeight implements Weight {
         this.segmentNum = segmentNum;
     }
 
-    public static void readEdgesWeights(Graph graph, String filename, Demographics demographics) {
+    public static void readEdgesWeights(Graph graph, String filename, Population population) {
         MyLogger.important("Adding IBD features from " + filename);
 
         BufferedReader fileReader;
@@ -66,10 +66,10 @@ public class IBDFeaturesWeight implements Weight {
                 String segmentNumStr = nextLineTokenizer.nextToken();
                 String meanLengthStr = nextLineTokenizer.nextToken();
 
-                if (demographics.getPerson(iid1Str) == null || demographics.getPerson(iid2Str) == null)
+                if (population.getPerson(iid1Str) == null || population.getPerson(iid2Str) == null)
                     continue;
-                Integer iid1 = demographics.getPerson(iid1Str).getId();
-                Integer iid2 = demographics.getPerson(iid2Str).getId();
+                Integer iid1 = population.getPerson(iid1Str).getId();
+                Integer iid2 = population.getPerson(iid2Str).getId();
                 //Integer iid1 = Integer.parseInt(iid1Str);
                 //Integer iid2 = Integer.parseInt(iid2Str);
                 Double segmentNum = Double.parseDouble(segmentNumStr);

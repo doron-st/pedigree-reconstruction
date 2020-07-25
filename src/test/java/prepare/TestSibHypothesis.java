@@ -7,7 +7,7 @@ import graph.VertexData;
 import org.junit.Test;
 import pedigree.Person;
 import relationship.SibHypothesisTester;
-import simulator.Pedigree;
+import pedigree.Pedigree;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -26,12 +26,12 @@ public class TestSibHypothesis {
         Graph IBDgraph;
         try {
             List<VertexData> persons = Person.listFromDemograph(demographFilename);
-            Demographics demographics = new Demographics(persons);
+            Population population = new Population(persons);
             IBDgraph = new Graph(persons);
             MyLogger.info("====================Adding IBD Features edges===============================");
-            IBDFeaturesWeight.readEdgesWeights(IBDgraph, IBDFile, demographics);        // Adding edges to the graph
+            IBDFeaturesWeight.readEdgesWeights(IBDgraph, IBDFile, population);        // Adding edges to the graph
             MyLogger.important("Graph is " + IBDgraph);
-            ped = new Pedigree(demographics, false);
+            ped = new Pedigree(population, false);
 
         } catch (IOException e) {
             throw new RuntimeException("Error...", e);

@@ -1,8 +1,9 @@
 package simulator;
 
 import graph.MyLogger;
+import pedigree.Pedigree;
 import prepare.IBDFeaturesWeight;
-import simulator.Pedigree.PedVertex;
+import pedigree.Pedigree.PedVertex;
 
 import java.io.File;
 import java.io.FileNotFoundException;

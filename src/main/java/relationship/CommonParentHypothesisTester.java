@@ -4,8 +4,8 @@ import graph.*;
 import pedigree.NucFamily;
 import pedigree.Person;
 import prepare.Contraction;
-import simulator.Pedigree;
-import simulator.Pedigree.PedVertex;
+import pedigree.Pedigree;
+import pedigree.Pedigree.PedVertex;
 
 import java.util.ArrayList;
 import java.util.HashMap;

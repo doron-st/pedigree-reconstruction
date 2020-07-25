@@ -1,12 +1,13 @@
-package simulator;
+package evaluation;
 
 import graph.Graph;
 import graph.MyLogger;
 import graph.VertexData;
 import pedigree.Person;
-import prepare.Demographics;
+import prepare.Population;
 import prepare.IBDFeaturesWeight;
 import relationship.PedScoreCalc;
+import pedigree.Pedigree;
 
 import java.io.IOException;
 import java.util.List;
@@ -24,10 +25,10 @@ public class CalcPedigreeIBDScore {
         Graph IBDGraph;
         try {
             List<VertexData> persons = Person.listFromDemograph(demographicsFilename);
-            Demographics demographics = new Demographics(persons);
+            Population population = new Population(persons);
             IBDGraph = new Graph(persons);
-            IBDFeaturesWeight.readEdgesWeights(IBDGraph, IBDFile, demographics);        // Adding edges to the graph
-            inferredPed = new Pedigree(demographics, false);
+            IBDFeaturesWeight.readEdgesWeights(IBDGraph, IBDFile, population);        // Adding edges to the graph
+            inferredPed = new Pedigree(population, false);
         } catch (IOException e) {
             throw new RuntimeException("Error...", e);
         }

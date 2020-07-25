@@ -3,8 +3,8 @@ package prepare;
 import graph.*;
 import pedigree.NucFamily;
 import pedigree.Person;
-import simulator.Pedigree;
-import simulator.Pedigree.PedVertex;
+import pedigree.Pedigree;
+import pedigree.Pedigree.PedVertex;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -55,8 +55,8 @@ public class Contraction {
 
                 if (livingDescendants1.containsAll(livingDescendants2) && livingDescendants2.containsAll(livingDescendants1)) {
                     MyLogger.debug("Contracting " + v1 + "," + v2);
-                    Person p1 = p.getDemographics().getPerson(vid1);
-                    Person p2 = p.getDemographics().getPerson(vid2);
+                    Person p1 = p.getPopulation().getPerson(vid1);
+                    Person p2 = p.getPopulation().getPerson(vid2);
 
 
                     //if both are yet to be contracted
@@ -84,7 +84,7 @@ public class Contraction {
             }
             //If no one to contract with, create singleton super vertex
             if (contractionMap.get(v1.getId()) == null) {
-                Person p1 = p.getDemographics().getPerson(v1.getId());
+                Person p1 = p.getPopulation().getPerson(v1.getId());
                 SuperVertex sv = new SuperVertex(new BaseVertex(p1));
                 contractedNodes.add(sv);
                 contractionMap.put(v1.getId(), sv);
