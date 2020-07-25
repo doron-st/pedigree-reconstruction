@@ -1,6 +1,7 @@
-package prepare;
+package pedreconstruction;
 
 import graph.*;
+import misc.MyLogger;
 import relationship.RelationshipProbWeight;
 import pedigree.Pedigree;
 

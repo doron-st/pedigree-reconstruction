@@ -1,6 +1,7 @@
-package prepare;
+package pedreconstruction;
 
 import graph.*;
+import misc.MyLogger;
 import pedigree.NucFamily;
 import pedigree.Person;
 import pedigree.Pedigree;

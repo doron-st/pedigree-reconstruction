@@ -1,12 +1,13 @@
 package simulator;
 
-import graph.MyLogger;
+import common.*;
+import misc.MyLogger;
 import net.sourceforge.argparse4j.ArgumentParsers;
 import net.sourceforge.argparse4j.inf.ArgumentParser;
 import net.sourceforge.argparse4j.inf.Namespace;
 import pedigree.Pedigree;
 import pedigree.Pedigree.PedVertex;
-import prepare.IBDFeaturesWeight;
+import pedreconstruction.IBDFeaturesWeight;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -34,7 +35,7 @@ public class WrightFisherSimulator {
     private int totalIndividuals = 0;
     private final double familySizeControlRate = 0.2;
 
-    private static Namespace parseArgs(String[] argv) {
+    static Namespace parseArgs(String[] argv) {
         ArgumentParser parser = ArgumentParsers.newArgumentParser(WrightFisherSimulator.class.getSimpleName())
                 .defaultHelp(true)
                 .description("Wright-Fisher population simulator (random mating of diploid population)");
@@ -80,16 +81,8 @@ public class WrightFisherSimulator {
         }
     }
 
-    public static void main(String[] argv) {
-        Namespace args = parseArgs(argv);
-        WrightFisherSimulator wrightFisherSimulator = new WrightFisherSimulator(args);
-        wrightFisherSimulator.run();
-    }
-
-    private void run() {
-
+    public void run() {
         createFounderGenerationGenotypes();
-
         for (int geneneration = 1; geneneration < generations; geneneration++) {
             MyLogger.important("generation " + geneneration);
             MyLogger.info("totalIndividuals: " + totalIndividuals);
@@ -276,7 +269,10 @@ public class WrightFisherSimulator {
             for (int j = i + 1; j < popSize; j++) {
                 IBDFeaturesWeight ibdW = IBDFeaturesWeight.calcIBDFeatureWeight(genotypes[i], genotypes[j], false, false);
                 if (ibdW.getSegmentNum() > 0) {
-                    MyLogger.important("IBD : " + (totalIndividuals - popSize + i) + "," + (totalIndividuals - popSize + j) + " =" + ibdW);
+                    MyLogger.important(String.format("IBD(%d,%d): %s",
+                            (totalIndividuals - popSize + i),
+                            (totalIndividuals - popSize + j),
+                            ibdW));
                     //MyLogger.important(0 + " geno= " + genotypes[0]);
                     //MyLogger.important(j + " geno= " + genotypes[j]);
                     ibdWriter.println((totalIndividuals - popSize + i) + "\t" + (totalIndividuals - popSize + j) + "\t" + ibdW.getSegmentNum() + "\t" + ibdW.getMeanLength() + "\t20\t20");
@@ -367,8 +363,14 @@ public class WrightFisherSimulator {
 
         }
         printWriter.print("\n");
-
     }
+
+    public static void main(String[] argv) {
+        Namespace args = parseArgs(argv);
+        WrightFisherSimulator wrightFisherSimulator = new WrightFisherSimulator(args);
+        wrightFisherSimulator.run();
+    }
+
 }
 
 

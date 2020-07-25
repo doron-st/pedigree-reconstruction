@@ -1,11 +1,13 @@
-package simulator;
+package common;
 
+import common.Genotype;
+import common.Haplotype;
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
-public class TestRecombination {
+public class TestGenotype {
 
     @Test
     public void test() {

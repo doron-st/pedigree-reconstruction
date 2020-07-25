@@ -1,9 +1,10 @@
 package relationship;
 
 import graph.*;
+import misc.MyLogger;
 import pedigree.NucFamily;
 import pedigree.Person;
-import prepare.Contraction;
+import pedreconstruction.Contraction;
 import pedigree.Pedigree;
 import pedigree.Pedigree.PedVertex;
 

@@ -1,26 +1,28 @@
-package prepare;
+package pedreconstruction;
 
 import graph.*;
+import misc.MyLogger;
 import relationship.RelationshipProbWeight;
 import pedigree.Pedigree;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class HalfSibGraphExpander {
-    private final Graph contractedGraph;
-    private final Contraction contraction;//sibGroup contraction
-    private final Pedigree ped;
+public class HalfSibGraphExpender {
+
+    private Graph contractedGraph;
+    private Contraction contraction;//sibGroup contraction
+    private Pedigree ped;
     private Graph expendedGraph;
 
-    public HalfSibGraphExpander(Graph nucFamGraph, Pedigree ped, Contraction contraction) {
+    public HalfSibGraphExpender(Graph nucFamGraph, Pedigree ped, Contraction contraction) {
         this.contractedGraph = nucFamGraph;
         this.ped = ped;
         this.contraction = contraction;
     }
 
     /**
-     * Run Expansion algorithm:
+     * Run Expension algorithm:
      *
      * @return - The expended relationships graph
      */
@@ -36,7 +38,7 @@ public class HalfSibGraphExpander {
         for (Vertex sv : contractedGraph.getVertices()) {
 
             MyLogger.important("sv=" + sv + " svid=" + sv.getVertexId());
-            List<Integer> allMateIDs = new ArrayList<>();
+            List<Integer> allMateIDs = new ArrayList<Integer>();
 
 
             for (Vertex sib : ((SuperVertex) sv.getData()).getInnerVertices()) {
@@ -48,7 +50,7 @@ public class HalfSibGraphExpander {
                 for (Edge se : sv.getEdgeMap().values()) {
                     Vertex potentSib = se.getVertex2();
 
-                    //treat only ML half-sibs
+                    //treat only ML halfsibs
                     if (!((RelationshipProbWeight) sv.getEdgeTo(potentSib.getVertexId()).getWeight()).isMaxProbCategory("halfSib"))
                         continue;
 
@@ -62,24 +64,21 @@ public class HalfSibGraphExpander {
                                 MyLogger.important("Mate " + mate + " has halfSibEdge to " + potentSib + " with less individuals then " + sv + ", removing edge");
                                 mate.removeEdgeTo(potentSib);
                                 potentSib.removeEdgeTo(mate);
-                            } else {
-                                if (((SuperVertex) sv.getData()).getInnerVertices().size() >= ((SuperVertex) mate.getData()).getInnerVertices().size()) {
-                                    if (((RelationshipProbWeight) mate.getEdgeTo(potentSib.getVertexId()).getWeight()).isMaxProbCategory("halfSib")) {
-                                        Edge mateEdge = mate.getEdgeTo(potentSib.getVertexId());
-                                        double mateProb = ((RelationshipProbWeight) mateEdge.getWeight()).getProb("halfSib");
-                                        if (mateProb < myProb) {
-                                            MyLogger.important("Mate " + mate + " has halfSibEdge to " + potentSib + " with lower probability then " + sv + ", removing edge");
-                                            mate.removeEdgeTo(potentSib);
-                                        }
-                                    }
-                                }
+                            } else if (((SuperVertex) sv.getData()).getInnerVertices().size() < ((SuperVertex) mate.getData()).getInnerVertices().size())
+                                continue;
                                 //If sibling group sizes are equal, remove lower prob edge
+                            else if (((RelationshipProbWeight) mate.getEdgeTo(potentSib.getVertexId()).getWeight()).isMaxProbCategory("halfSib")) {
+                                Edge mateEdge = mate.getEdgeTo(potentSib.getVertexId());
+                                double mateProb = ((RelationshipProbWeight) mateEdge.getWeight()).getProb("halfSib");
+                                if (mateProb < myProb) {
+                                    MyLogger.important("Mate " + mate + " has halfSibEdge to " + potentSib + " with lower probability then " + sv + ", removing edge");
+                                    mate.removeEdgeTo(potentSib);
+                                }
                             }
-
                         }
                     }//for each mate
                 }//for each sib
-            }//for each super-edge
+            }//for each suoer-edge
 
             //dispose common parent between mates, cause are already siblings
             for (int mateID1 : allMateIDs) {

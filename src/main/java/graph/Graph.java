@@ -1,5 +1,6 @@
 package graph;
 
+import misc.MyLogger;
 import relationship.RelationshipProbWeight;
 
 import java.io.Serializable;

@@ -2,7 +2,7 @@ package relationship;
 
 import graph.Edge;
 import graph.Graph;
-import graph.MyLogger;
+import misc.MyLogger;
 import jsat.classifiers.DataPoint;
 import jsat.distributions.multivariate.MultivariateKDE;
 import jsat.linear.Vec;

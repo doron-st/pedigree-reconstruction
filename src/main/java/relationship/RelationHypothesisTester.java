@@ -1,6 +1,7 @@
 package relationship;
 
 import graph.*;
+import misc.MyLogger;
 import org.apache.commons.math3.distribution.ExponentialDistribution;
 import org.apache.commons.math3.distribution.NormalDistribution;
 import pedigree.Pedigree;

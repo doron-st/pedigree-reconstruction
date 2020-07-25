@@ -1,6 +1,6 @@
-package simulator;
+package pedigree;
 
-import graph.MyLogger;
+import misc.MyLogger;
 import org.junit.Test;
 import pedigree.Pedigree;
 

@@ -1,13 +1,13 @@
 package relationship;
 
 import graph.Graph;
-import graph.MyLogger;
+import misc.MyLogger;
 import jsat.classifiers.DataPoint;
 import jsat.distributions.empirical.kernelfunc.GaussKF;
 import jsat.distributions.multivariate.MetricKDE;
 import jsat.distributions.multivariate.MultivariateKDE;
 import jsat.linear.distancemetrics.EuclideanDistance;
-import prepare.IBDFeaturesWeight;
+import pedreconstruction.IBDFeaturesWeight;
 import pedigree.Pedigree;
 import pedigree.Pedigree.PedVertex;
 

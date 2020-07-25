@@ -1,11 +1,11 @@
 package evaluation;
 
 import graph.Graph;
-import graph.MyLogger;
+import misc.MyLogger;
 import graph.VertexData;
 import pedigree.Person;
-import prepare.Population;
-import prepare.IBDFeaturesWeight;
+import pedreconstruction.Population;
+import pedreconstruction.IBDFeaturesWeight;
 import relationship.PedScoreCalc;
 import pedigree.Pedigree;
 

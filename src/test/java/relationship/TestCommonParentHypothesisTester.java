@@ -1,12 +1,15 @@
-package prepare;
+package relationship;
 
 
 import graph.Graph;
-import graph.MyLogger;
+import misc.MyLogger;
 import graph.VertexData;
 import org.junit.Test;
 import pedigree.NucFamily;
 import pedigree.Person;
+import pedreconstruction.Contraction;
+import pedreconstruction.IBDFeaturesWeight;
+import pedreconstruction.Population;
 import relationship.CommonParentHypothesisTester;
 import pedigree.Pedigree;
 
@@ -14,7 +17,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class TestCommonParentHypothesis {
+public class TestCommonParentHypothesisTester {
     Contraction contraction;
 
     @Test

@@ -1,7 +1,7 @@
-package prepare;
+package pedreconstruction;
 
 import graph.Graph;
-import graph.MyLogger;
+import misc.MyLogger;
 import graph.SuperVertex;
 import graph.Vertex;
 import pedigree.NextIDGenerator;

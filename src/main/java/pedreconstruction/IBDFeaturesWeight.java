@@ -1,12 +1,13 @@
-package prepare;
+package pedreconstruction;
 
 import graph.*;
 import jsat.classifiers.DataPoint;
 import jsat.linear.Vec;
+import misc.MyLogger;
 import misc.VecImpl;
-import simulator.Genotype;
-import simulator.HapRegion;
-import simulator.Location;
+import common.Genotype;
+import common.HapRegion;
+import common.Location;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -237,7 +238,7 @@ public class IBDFeaturesWeight implements Weight {
     //	return Math.pow(meanLength-w.meanLength,2)+ Math.pow(segmentNum-w.segmentNum,2);
     //}
     public String toString() {
-        return segmentNum + "," + meanLength;
+        return String.format("NumberOfSegments: %.1f, MeanLength: %.1f", segmentNum, meanLength);
     }
 
     public DataPoint asDataPoint() {

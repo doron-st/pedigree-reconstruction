@@ -2,7 +2,7 @@ package pedigree;
 
 import graph.Edge;
 import graph.Graph;
-import graph.MyLogger;
+import misc.MyLogger;
 import graph.Vertex;
 import relationship.RelationshipProbWeight;
 

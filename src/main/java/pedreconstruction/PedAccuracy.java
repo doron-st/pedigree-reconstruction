@@ -1,6 +1,6 @@
-package prepare;
+package pedreconstruction;
 
-import graph.MyLogger;
+import misc.MyLogger;
 import pedigree.Pedigree;
 
 public class PedAccuracy {

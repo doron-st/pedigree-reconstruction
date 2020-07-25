@@ -1,7 +1,7 @@
 package pedigree;
 
 import graph.Graph;
-import graph.MyLogger;
+import misc.MyLogger;
 import graph.Vertex;
 
 import javax.management.RuntimeErrorException;

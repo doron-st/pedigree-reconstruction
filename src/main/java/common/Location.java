@@ -1,4 +1,4 @@
-package simulator;
+package common;
 
 public class Location implements Comparable<Location> {
     private int chr;

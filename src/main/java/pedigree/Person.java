@@ -1,6 +1,6 @@
 package pedigree;
 
-import graph.MyLogger;
+import misc.MyLogger;
 import graph.VertexData;
 
 import java.io.BufferedReader;

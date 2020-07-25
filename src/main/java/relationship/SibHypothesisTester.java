@@ -1,7 +1,8 @@
 package relationship;
 
 import graph.*;
-import prepare.Contraction;
+import misc.MyLogger;
+import pedreconstruction.Contraction;
 import pedigree.Pedigree;
 import pedigree.Pedigree.PedVertex;
 

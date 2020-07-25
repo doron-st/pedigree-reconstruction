@@ -1,4 +1,4 @@
-package prepare;
+package pedreconstruction;
 
 import graph.VertexData;
 import pedigree.Person;

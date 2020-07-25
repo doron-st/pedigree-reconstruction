@@ -1,9 +1,9 @@
 package pedigree;
 
-import graph.MyLogger;
-import prepare.Population;
-import simulator.Genotype;
-import simulator.Haplotype;
+import misc.MyLogger;
+import pedreconstruction.Population;
+import common.Genotype;
+import common.Haplotype;
 
 import java.io.*;
 import java.util.*;
@@ -415,6 +415,7 @@ public class Pedigree {
      */
     public void writeToFile(File file, Population dem) throws IOException {
         MyLogger.important("Writing pedigree to file: " + file);
+        file.getAbsoluteFile().getParentFile().mkdirs();
         PrintWriter printWriter = new PrintWriter(file);
         for (PedVertex v : getVertices()) {
             if (!v.isFounder() && dem.getPerson(v.getId()) != null) {
@@ -628,7 +629,8 @@ public class Pedigree {
 
         public String toString() {
             //	return id + "";
-            return "[" + id + " " + getFatherId() + "," + getMotherId() + "," + isAlive() + "," + isFounder() + "]";
+            return String.format("id: %d, father: %d, mother: %d, isAlive: %s, isFounder: %s",
+                    id, getFatherId(), getMotherId(), isAlive(), isFounder());
         }
 
         public int compareTo(PedVertex other) {
@@ -782,8 +784,8 @@ public class Pedigree {
         }
         for (PedVertex v : getVertices()) {
             if (!ancestors.contains(v)) {
+                MyLogger.important("remove " + v);
                 removeVertex(v.getId());
-                MyLogger.important("prune " + v);
             }
         }
     }

@@ -1,10 +1,10 @@
 package evaluation;
 
-import graph.MyLogger;
+import misc.MyLogger;
 import graph.VertexData;
 import pedigree.Person;
-import prepare.Population;
-import prepare.PedAccuracy;
+import pedreconstruction.Population;
+import pedreconstruction.PedAccuracy;
 import pedigree.Pedigree;
 
 import java.io.IOException;
