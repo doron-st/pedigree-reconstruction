@@ -1,4 +1,4 @@
-package pedreconstruction;
+package relationship;
 
 import com.google.common.io.Resources;
 import common.Population;
@@ -8,8 +8,8 @@ import graph.Vertex;
 import graph.VertexData;
 import org.junit.Test;
 import pedigree.Person;
-import relationship.RelationshipProbWeight;
-import relationship.SibHypothesisTester;
+import pedreconstruction.Contraction;
+import pedreconstruction.IBDFeaturesWeight;
 import pedigree.Pedigree;
 
 import java.io.IOException;
@@ -19,14 +19,14 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 import static relationship.Relationship.FULL_SIB;
 
-public class TestSibHypothesis {
+public class TestSibHypothesisTester {
 
     @Test
-    public void test() {
+    public void testSibHypothesis() {
 
-        String demographicsFile = Resources.getResource("pedigree_start10_end10_gen3/pedigree.demographics").getFile();
-        String ibdFile = Resources.getResource("pedigree_start10_end10_gen3/pedigree.ibd").getFile();
-        String pedigreeFile = Resources.getResource("pedigree_start10_end10_gen3/pedigree.structure").getFile();
+        String demographicsFile = Resources.getResource("pedigree_start100_end100_gen3/pedigree.demographics").getFile();
+        String ibdFile = Resources.getResource("pedigree_start100_end100_gen3/pedigree.ibd").getFile();
+        String pedigreeFile = Resources.getResource("pedigree_start100_end100_gen3/pedigree.structure").getFile();
 
         Pedigree ped;
         Graph ibdGraph;
@@ -56,7 +56,6 @@ public class TestSibHypothesis {
         MyLogger.important("Test sibs");
         testSib(ped, tester, contractedRelationGraph, 414, 464, 0.065);
         testSib(ped, tester, contractedRelationGraph, 464, 414, 0.065);
-
         MyLogger.important("Test unrelated");
         testSib(ped, tester, contractedRelationGraph, 414, 415, 0);
     }

@@ -41,7 +41,6 @@ public class SiblingGrouper {
 
         for (Vertex v : existingVertices) {
             for (Edge e : v.getEdgeMap().values()) {
-                //Vertex u = e.getVertex2();
                 RelationshipProbWeight weight = (RelationshipProbWeight) e.getWeight();
 
                 if (weight.isMaxProbCategory(FULL_SIB)) {
@@ -58,9 +57,7 @@ public class SiblingGrouper {
 
         List<SimpleGraph> list = new ArrayList<>(CC.values());
         //Identify each CC in the Sibs-graph as siblings, (include thining for large CC's)
-        //connectedComponentAsSibs(sibGraph, list);
         maxCliqueAsSibs(sibGraph, list);
-        //maxISofCliquesAsSibs(sibGraph, list);
         MyLogger.important("Found " + totalSibs + " sibs");
     }
 
@@ -193,37 +190,8 @@ public class SiblingGrouper {
                 }
             }
             uniteAllCommonParents(allCliquesForJoining);
-            //uniteAllCommonParentsArbitraryOrder(allCliquesForJoining);
         }
     }
-
-	/*
-	private void connectedComponentAsSibs(SimpleGraph sibGraph,	List<SimpleGraph> list) {
-		
-		 //Find sib cliques in each CC
-		for(int i=0;i<list.size();i++){
-			SimpleGraph g = list.get(i);
-			MyLogger.important("ConnectedComponent " + i);MyLogger.important(g.getVertices().toString());
-			MyLogger.important(g.toString());
-
-
-			int ccSize = g.getVertices().size();
-			if(ccSize==1)
-				continue;
-
-			//Too large to be a sibling group
-			int maxCCSize = 7;
-
-			if(thinLargeCC(maxCCSize, g, list))
-				continue;
-
-			//Take entire CC
-			SimpleGraph cliqueGraph = new SimpleGraph();
-			cliqueGraph.createSimpleVertex(g.getVertices().toString(),sibGraph.calcSumOfEdgesWeight(g.getVertices()));
-			updateSibsInGraph(graph,GraphAlgorithms.findCliques(cliqueGraph,1).get(0));
-		}
-	}
-*/
 
     /**
      * @param maxSize max CC size

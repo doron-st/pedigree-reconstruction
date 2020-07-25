@@ -4,14 +4,17 @@ import misc.MyLogger;
 import pedigree.Pedigree;
 
 public class PedAccuracy {
+    private double score = 0;
+    private double relatedPairs = 0;
+    private double fp = 0;
+    private int pairs = 0;
+    private double bothUnrelated = 0;
+    private double inferredRelatedPairs;
+    private double ipedScore;
+    private double sensitivity;
+    private double specificity;
 
     public void calcAccuracy(Pedigree ip, Pedigree rp) {
-        double score = 0;
-        double relatedPairs = 0;
-        double fp = 0;
-        int pairs = 0;
-        double bothUnrelated = 0;
-
         for (Pedigree.PedVertex v1 : ip.getLiving()) {
             for (Pedigree.PedVertex v2 : ip.getLiving()) {
 
@@ -32,10 +35,23 @@ public class PedAccuracy {
                     bothUnrelated++;
             }
         }
+
+        inferredRelatedPairs =  (score + fp);
+        ipedScore = (score + bothUnrelated) / pairs;
+        sensitivity = score / relatedPairs;
+        specificity = score / (score + fp);
         MyLogger.important("True related pairs=" + relatedPairs);
-        MyLogger.important("Inferred related pairs=" + (score + fp));
-        MyLogger.important("IPED_score=" + ((score + bothUnrelated) / pairs));
-        MyLogger.important("Sensitivity=" + score / relatedPairs);
-        MyLogger.important("Specificity=" + (score / (score + fp)));
+        MyLogger.important("Inferred related pairs=" + inferredRelatedPairs);
+        MyLogger.important("IPED_score=" + ipedScore);
+        MyLogger.important("Sensitivity=" + sensitivity);
+        MyLogger.important("Specificity=" + specificity);
+    }
+
+    public double getSensitivity() {
+        return sensitivity;
+    }
+
+    public double getSpecificity() {
+        return specificity;
     }
 }
