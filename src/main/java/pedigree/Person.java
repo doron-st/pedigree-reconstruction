@@ -21,9 +21,9 @@ public class Person implements VertexData, Comparable<Person> {
     // Members in the person's family - after inferring the reconstruct
     private final Family family = new Family();
     private final Boolean isAlive;
-    private int discoveryGeneration;
+    private final int discoveryGeneration;
 
-    public Person(Integer id, String personIdStr, Integer age, Boolean gender, int discoveryGeneration) {
+    public Person(Integer id, Integer age, Boolean gender, int discoveryGeneration) {
         this.id = id;
         this.age = age;
         this.gender = gender;
@@ -74,18 +74,16 @@ public class Person implements VertexData, Comparable<Person> {
     /**
      * read person list from demographics file
      *
-     * @param demographFilename - demographics file
+     * @param demographicsFilename - demographics file
      * @return list of person data
      * @throws IOException - in case of a problem reading the file
      */
-    public static List<VertexData> listFromDemograph(String demographFilename) throws IOException {
-        MyLogger.important("Creating person list from " + demographFilename);
+    public static List<VertexData> listFromDemograph(String demographicsFilename) throws IOException {
+        MyLogger.important("Creating person list from " + demographicsFilename);
         List<VertexData> persons = new ArrayList<>();
 
-        boolean demographicsHasHeader = true;
-        BufferedReader fileReader = new BufferedReader(new FileReader(new File(demographFilename)));
-        if (demographicsHasHeader)
-            fileReader.readLine();
+        BufferedReader fileReader = new BufferedReader(new FileReader(new File(demographicsFilename)));
+        fileReader.readLine();
 
         String nextLine;
         int i = 0;
@@ -108,7 +106,7 @@ public class Person implements VertexData, Comparable<Person> {
                 fileReader.close();
                 throw new RuntimeException("Error parsing gender " + personGenderStr);
             }
-            Person p = new Person(id, personIdStr, age, gender, 0);
+            Person p = new Person(id, age, gender, 0);
             persons.add(p);
             MyLogger.debug(i + ")Added " + p + " to graph");
         }

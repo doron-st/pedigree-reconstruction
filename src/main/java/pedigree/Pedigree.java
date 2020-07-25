@@ -449,7 +449,7 @@ public class Pedigree {
         }
         int avgAge = sumAge / v.getChildren().size();
         if (population.getPerson(id) == null) {
-            Person p = new Person(id, String.valueOf(id), avgAge + 20, isMale, generation);
+            Person p = new Person(id, avgAge + 20, isMale, generation);
             population.addPerson(p);
             //	MyLogger.important("Added person" + p);
         } else {

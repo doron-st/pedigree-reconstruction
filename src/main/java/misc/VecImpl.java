@@ -7,10 +7,6 @@ public class VecImpl extends Vec {
     private static final long serialVersionUID = 1L;
     private final double[] arr;
 
-    public VecImpl(double[] arr) {
-        this.arr = arr;
-    }
-
     public VecImpl(double a, double b) {
         arr = new double[]{a, b};
     }

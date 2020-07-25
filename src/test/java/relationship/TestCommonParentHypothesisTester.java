@@ -68,8 +68,8 @@ public class TestCommonParentHypothesisTester {
                                   Graph contractedRelationGraph, List<Person> sib1, List<Person> sib2) {
 
         List<NucFamily> nucFamilies = new ArrayList<>();
-        nucFamilies.add(new NucFamily(new Person(1, "1", 50, false, 1), new Person(2, "2", 50, true, 1), sib1));
-        nucFamilies.add(new NucFamily(new Person(3, "3", 50, false, 1), new Person(4, "4", 50, true, 1), sib2));
+        nucFamilies.add(new NucFamily(new Person(1, 50, false, 1), new Person(2, 50, true, 1), sib1));
+        nucFamilies.add(new NucFamily(new Person(3, 50, false, 1), new Person(4, 50, true, 1), sib2));
 		tester.run(ped, contraction, nucFamilies);
     }
 

@@ -113,7 +113,7 @@ public class NuclearFamilyCreator {
             if (mother == null) {
                 if (deadMother == null) {
                     int id = nextIDGen.getNextID();
-                    deadMother = new Person(id, String.valueOf(id), 9999, true, discoveryGeneration);
+                    deadMother = new Person(id, 9999, true, discoveryGeneration);
                     //	deadMother.setAlive(false);
                     nucFamiliyCreationStat.numberOfDead++;
                     MyLogger.info("New mother: " + deadMother.getId());
@@ -129,7 +129,7 @@ public class NuclearFamilyCreator {
             if (father == null) {
                 if (deadFather == null) {
                     int id = nextIDGen.getNextID();
-                    deadFather = new Person(id, String.valueOf(id), 9999, false, discoveryGeneration);
+                    deadFather = new Person(id, 9999, false, discoveryGeneration);
                     //	deadFather.setAlive(false);
                     nucFamiliyCreationStat.numberOfDead++;
                     MyLogger.info("New father: " + deadFather.getId());
@@ -328,7 +328,7 @@ public class NuclearFamilyCreator {
 
 
     /**
-     * a simple method for verifying that all the siblings in a list have the same siblings in their "familiy"
+     * a simple method for verifying that all the siblings in a list have the same siblings in their "family"
      *
      * @param siblings list of persons who are siblings
      */
