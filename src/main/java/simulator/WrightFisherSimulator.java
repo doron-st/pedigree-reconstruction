@@ -19,7 +19,7 @@ public class WrightFisherSimulator {
     private final int finalPopSize;
     private final int generations;
     private final double monogamyProb;
-    private final String out;
+    private final String outDir;
     private final double popIncreaseRatio;
     private final Random randomGenerator = new Random();
     private final Pedigree ped = new Pedigree();
@@ -39,7 +39,7 @@ public class WrightFisherSimulator {
                 .defaultHelp(true)
                 .description("Wright-Fisher population simulator (random mating of diploid population)");
 
-        parser.addArgument("outputFile");
+        parser.addArgument("outputDir");
         parser.addArgument("-initPopulationSize")
                 .type(Integer.class)
                 .help("initial population size")
@@ -51,7 +51,7 @@ public class WrightFisherSimulator {
         parser.addArgument("-numOfGenerations")
                 .type(Integer.class)
                 .help("number of generations to simulate mating for")
-                .setDefault(100);
+                .setDefault(5);
         parser.addArgument("-monogamyRate")
                 .type(Double.class)
                 .help("probability of a person to stay monogamous")
@@ -64,15 +64,15 @@ public class WrightFisherSimulator {
         finalPopSize = args.getInt("finalPopulationSize");
         generations = args.getInt("numOfGenerations");
         monogamyProb = args.getDouble("monogamyRate");
-        out = args.getString("outputFile");
-        popIncreaseRatio = Math.pow(finalPopSize / (double) popSize, 1.0 / generations);
+        outDir = args.getString("outputDir");
+        popIncreaseRatio = Math.pow(finalPopSize / (double) initialPopSize, 1.0 / generations);
         System.out.println("popIncreaseRatio=" + popIncreaseRatio);
         MyLogger.important("monogamyProb=" + monogamyProb);
         genotypes = new Genotype[popSize];
         genders = new boolean[popSize];
         popSize = initialPopSize;
-        File pedFile = new File(out + "/pedigree.ped");
-        pedFile.mkdirs();
+        new File(outDir).mkdirs();
+        File pedFile = new File(outDir + "/pedigree.ped");
         try {
             pedWriter = new PrintWriter(pedFile);
         } catch (FileNotFoundException e) {
@@ -88,7 +88,7 @@ public class WrightFisherSimulator {
 
     private void run() {
 
-        createFounderGenerationGenotypes(randomGenerator, couples);
+        createFounderGenerationGenotypes();
 
         for (int geneneration = 1; geneneration < generations; geneneration++) {
             MyLogger.important("generation " + geneneration);
@@ -213,10 +213,10 @@ public class WrightFisherSimulator {
     }
 
     private void writeOutputs() {
-        String structName = out + "/pedigree.structure";
-        File ibdIped = new File(out + "/pedigree.iped.ibd");
-        File demFile = new File(out + "/pedigree.demographics");
-        File ibdFile = new File(out + "/pedigree.ibd");
+        String structName = outDir + "/pedigree.structure";
+        File ibdIped = new File(outDir + "/pedigree.iped.ibd");
+        File demFile = new File(outDir + "/pedigree.demographics");
+        File ibdFile = new File(outDir + "/pedigree.ibd");
         try {
             writeIpedIBDFile(genotypes, ibdIped);
             List<PedVertex> lastGen = new ArrayList<>();
@@ -256,10 +256,12 @@ public class WrightFisherSimulator {
         demWriter.close();
     }
 
-    private void createFounderGenerationGenotypes(Random rg, List<List<Integer>> couples) {
+    private void createFounderGenerationGenotypes() {
+        genotypes = new Genotype[popSize];
+        genders = new boolean[popSize];
         for (int i = 0; i < popSize; i++) {
             genotypes[i] = new Genotype(i);
-            genders[i] = rg.nextBoolean();
+            genders[i] = randomGenerator.nextBoolean();
             couples.add(null);
             MyLogger.debug("Added vertex " + i + " " + -1 + " " + -1);
             ped.addVertex(i);
