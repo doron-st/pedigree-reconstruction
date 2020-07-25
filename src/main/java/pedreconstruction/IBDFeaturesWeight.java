@@ -50,7 +50,7 @@ public class IBDFeaturesWeight implements Weight {
             //-- First line in the file holds the titles and is redundant
             //fileReader.readLine();
         } catch (IOException e) {
-            throw new RuntimeException("Failed openning IBD file " + filename, e);
+            throw new RuntimeException("Failed opening IBD file " + filename, e);
         }
 
         String nextLine;
@@ -110,12 +110,11 @@ public class IBDFeaturesWeight implements Weight {
             IBD = extendUnphasedIBDSegments(IBD);
 
 
-        //MyLogger.debug("All IBD : " + IBD);
         double totalLength = 0;
         int segNum = 0;
 
         for (HapRegion segment : IBD) {
-            totalLength += (segment.getEnd().getPosition() - segment.getStart().getPosition()) / 1000000;
+            totalLength += (segment.getEnd().getPosition() - segment.getStart().getPosition()) / 1000000.0;
             segNum++;
         }
 
@@ -125,24 +124,21 @@ public class IBDFeaturesWeight implements Weight {
 
         //Add noise if unrelated
         if (addNoise) {
-            Random randomgenerator = new Random();
+            Random randomGenerator = new Random();
             if (segNum == 0) {
-                segNum = (int) (10 * Math.abs(randomgenerator.nextGaussian()));
+                segNum = (int) (10 * Math.abs(randomGenerator.nextGaussian()));
                 if (segNum > 0)
-                    meanLength = Math.max(1.0, Math.pow(15 - segNum + randomgenerator.nextGaussian(), 3) / 100 + 10 / segNum * randomgenerator.nextGaussian());
-                //MyLogger.important("segNum="+ segNum + " meanLength="+ meanLength);
+                    meanLength = Math.max(1.0, Math.pow(15 - segNum + randomGenerator.nextGaussian(), 3) / 100 + 10.0 / segNum * randomGenerator.nextGaussian());
             }
 
             //Add parent-child noise
             if (segNum == 22 && meanLength > 130) {
-                segNum += (int) Math.abs((randomgenerator.nextGaussian() * 10));
-                meanLength = 40 + Math.pow(50 - segNum, 2) / 9 + randomgenerator.nextGaussian();
+                segNum += (int) Math.abs((randomGenerator.nextGaussian() * 10));
+                meanLength = 40 + Math.pow(50 - segNum, 2) / 9 + randomGenerator.nextGaussian();
                 //MyLogger.info("segNum="+ segNum + " meanLength="+ meanLength);
             }
         }
-        //MyLogger.important("segNum = " + segNum +",meanLength=" + meanLength);
         return new IBDFeaturesWeight(segNum, meanLength);
-        //return new IBDFeaturesWeight(segNum/18.0, meanLength/6);
     }
 
     /**
@@ -160,15 +156,15 @@ public class IBDFeaturesWeight implements Weight {
         MyLogger.info("IBD after= " + IBD);
 
         Location currStart = IBD.get(0).getStart();
-        ListIterator<HapRegion> iter = IBD.listIterator();
+        ListIterator<HapRegion> iterator = IBD.listIterator();
 
-        while (iter.hasNext()) {
-            HapRegion segment = iter.next();
+        while (iterator.hasNext()) {
+            HapRegion segment = iterator.next();
 
             Location nextStart;
-            if (iter.hasNext()) {
-                nextStart = iter.next().getStart();
-                iter.previous();
+            if (iterator.hasNext()) {
+                nextStart = iterator.next().getStart();
+                iterator.previous();
             } else
                 nextStart = new Location(100, 1);//after genome end
 
@@ -177,10 +173,7 @@ public class IBDFeaturesWeight implements Weight {
                 MyLogger.info("Extended IBD= " + currStart + " , " + segment.getEnd());
                 currStart = nextStart;
             }
-            //else
-            //MyLogger.important("Extend IBD segment until " +  segment.getEnd());
         }
-        //MyLogger.debug("After extention: " + extended);
         return extended;
     }
 
@@ -188,45 +181,35 @@ public class IBDFeaturesWeight implements Weight {
      * Connect consecutive IBD segments with different founder origin, into one IBD segment
      * @return list of extended IBD segments
      */
-    private static List<HapRegion> extendUnphasedIBDSegments(List<HapRegion> IBD) {
+    private static List<HapRegion> extendUnphasedIBDSegments(List<HapRegion> hapRegions) {
 
-        if (IBD.size() < 2) {
-            return IBD;
+        if (hapRegions.size() < 2) {
+            return hapRegions;
         }
         List<HapRegion> extended = new ArrayList<>();
-        //	MyLogger.important("IBD before= " + IBD);
-        Collections.sort(IBD);
-        //MyLogger.important("IBD after= " + IBD);
+        Collections.sort(hapRegions);
 
-        //MyLogger.debug("Before extention: " + IBD);
-        Location currStart = IBD.get(0).getStart();
-        ListIterator<HapRegion> iter = IBD.listIterator();
+        Location currStart = hapRegions.get(0).getStart();
+        ListIterator<HapRegion> iterator = hapRegions.listIterator();
 
-        while (iter.hasNext()) {
-            HapRegion segment = iter.next();
+        while (iterator.hasNext()) {
+            HapRegion segment = iterator.next();
 
             Location nextStart;
-            if (iter.hasNext()) {
-                nextStart = iter.next().getStart();
-                iter.previous();
+            if (iterator.hasNext()) {
+                nextStart = iterator.next().getStart();
+                iterator.previous();
             } else
                 nextStart = new Location(100, 1);//after genome end
 
             if (segment.getEnd().compareTo(nextStart) < 0) {
                 extended.add(new HapRegion(currStart, segment.getEnd(), "ext"));
-                //MyLogger.important("Extended IBD= " + currStart + " , "+ segment.getEnd());
                 currStart = nextStart;
             }
-            //else
-            //MyLogger.important("Extend IBD segment until " +  segment.getEnd());
         }
-        //MyLogger.debug("After extention: " + extended);
         return extended;
     }
 
-    //public double distanceTo(IBDFeaturesWeight w) {
-    //	return Math.pow(meanLength-w.meanLength,2)+ Math.pow(segmentNum-w.segmentNum,2);
-    //}
     public String toString() {
         return String.format("NumberOfSegments: %.1f, MeanLength: %.1f", segmentNum, meanLength);
     }

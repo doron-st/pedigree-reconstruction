@@ -1,17 +1,13 @@
 package pedreconstruction;
 
 import graph.Graph;
-import misc.MyLogger;
 import graph.SuperVertex;
 import graph.Vertex;
-import pedigree.NextIDGenerator;
-import pedigree.NucFamily;
-import pedigree.NuclearFamilyCreator;
-import pedigree.Person;
+import misc.MyLogger;
+import pedigree.*;
 import relationship.CommonParentHypothesisTester;
 import relationship.RelationshipProbWeight;
 import relationship.SibHypothesisTester;
-import pedigree.Pedigree;
 
 import java.io.File;
 import java.io.IOException;
@@ -21,15 +17,11 @@ import java.util.List;
 import static relationship.Relationship.CHILD;
 import static relationship.Relationship.PARENT;
 
-//import prepare.ParentCouplesHypothesisTester;
-
 /**
  * Implementing reconstruct inference based on posterior relationship probabilities file
  */
 public class PedigreeBuilder {
-
     private final Graph graph;
-
     private int totalParents = 0;
     private int generation = 1;
     private final File outputDir;
@@ -66,13 +58,6 @@ public class PedigreeBuilder {
         contractedRelationGraph = contraction.createEdgelessContractedGraph();
 
         sibHypTester.run(ped, contractedRelationGraph, contractedRelationGraph.getVertices(), gen, fullPed);
-        //contractedRelationGraph = sibHypTester.debugWithRealRelationships(ped,contraction,fullPed);
-
-        //	if(!synchronous && gen>1){
-        //		MyLogger.important("===================Detect deceased parents (" + gen + " )====================");
-        //		parentsHypTester.run(ped,contractedRelationGraph,contraction,gen,fullPed,nextIDGen);
-        //	}
-
         SibGraphExpander sge = new SibGraphExpander(contractedRelationGraph, contraction);
 
         if (polygamous) {
@@ -92,7 +77,7 @@ public class PedigreeBuilder {
         SiblingGrouper sibGrouper = new SiblingGrouper(sibExpendedGraph);
         sibGrouper.detectSiblings(gen, ped);
 
-        //Retreive group of siblings
+        // Retrieve group of siblings
         NuclearFamilyCreator nuclearFamilyCreator = new NuclearFamilyCreator(sibExpendedGraph, gen, nextIDGen);
         List<List<Vertex>> siblingGroups = nuclearFamilyCreator.getSiblingGroups();
 
@@ -101,25 +86,13 @@ public class PedigreeBuilder {
         List<NucFamily> nucFamilies = nuclearFamilyCreator.createNuclearFamilies(siblingGroups, false);
 
         if (polygamous) {
-            //MyLogger.important("===========Re-Contracting unexpended vertices(" + gen + ")==========");
-            //contraction.reContractUnexpendedVertices(sibExpendedGraph);
-            //contraction.wrapExpendedVertices(sibExpendedGraph);
-            //MyLogger.important("Num of edges=" + sibExpendedGraph.getNumOfEdges());
-
-            //sibExpendedGraph.clearAllEdges();
-            //MyLogger.important("Num of edges=" + sibExpendedGraph.getNumOfEdges());
             Contraction sibContraction = new Contraction(nucFamilies);
 
             MyLogger.important("===========Test Nuclear Families for common parent(" + gen + ")==========");
             Graph halfSibGraph = commonParentHypothesisTester.run(ped, sibContraction, nucFamilies);
-            //commomParentHypTester.debugWithRealRelationships(ped,sibExpendedGraph,contraction,nucFamilies,gen,fullPed);
-
             HalfSibGraphExpander hsge = new HalfSibGraphExpander(halfSibGraph, ped, sibContraction);
             MyLogger.important("===========Remove couple's double halfSib edges if existing(" + gen + ")==========");
             Graph expendedHalfSibGraph = hsge.run();
-            //MyLogger.important("===================Expand contracted half-sib graph (" + gen + " )====================");
-            //Graph halfSibExpendedRelationGraph = rge.run(HALF_SIB);
-            //MyLogger.important("Num of edges=" + halfSibExpendedRelationGraph.getNumOfEdges());
 
             MyLogger.important("======================Partition Half-Sibs(" + gen + ")=====================");
             sibGrouper = new SiblingGrouper(expendedHalfSibGraph);

@@ -46,7 +46,6 @@ public class Contraction {
                     if (!pv.isAlive())
                         livingDescendants2.remove(pv);
                 }
-                //descendants2.remove(v2);
 
                 int vid1 = v1.getId();
                 int vid2 = v2.getId();

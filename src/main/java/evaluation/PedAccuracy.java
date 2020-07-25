@@ -1,4 +1,4 @@
-package pedreconstruction;
+package evaluation;
 
 import misc.MyLogger;
 import pedigree.Pedigree;

@@ -4,7 +4,6 @@ import misc.MyLogger;
 import graph.VertexData;
 import pedigree.Person;
 import pedreconstruction.Population;
-import pedreconstruction.PedAccuracy;
 import pedigree.Pedigree;
 
 import java.io.IOException;

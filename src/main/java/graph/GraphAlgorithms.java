@@ -10,10 +10,9 @@ import java.util.*;
 
 
 public class GraphAlgorithms {
-
     static private int dfsTimer;
     static private SimpleVertex root;
-    static private Queue<SimpleVertex> deque;
+    static private Queue<SimpleVertex> queue;
 
     public static void dfs(SimpleGraph G) {
         initialize(G);
@@ -44,7 +43,7 @@ public class GraphAlgorithms {
         v.color = Color.BLACK;
         dfsTimer++;
         v.f = dfsTimer;
-        deque.add(v);
+        queue.add(v);
     }
 
     /**
@@ -54,7 +53,7 @@ public class GraphAlgorithms {
      */
     public static Queue<SimpleVertex> topologicalSort(SimpleGraph G) {
         dfs(G);
-        return deque;
+        return queue;
     }
 
     /**
@@ -83,38 +82,32 @@ public class GraphAlgorithms {
                 CCMap.put(v.root, g);
             }
         }
-        //SimpleGraph inter = new SimpleGraph();
         //add edges to CC map
         for (SimpleVertex v : dfsForest.getVertices()) {
             SimpleGraph g = CCMap.get(v.root);
-            //if(v.name.equals("13473")){
-            //inter = g;
-            //}
             for (SimpleVertex u : G.getNeighbors(v)) {
                 if (!g.getNeighbors(v).contains(u))
                     g.addEdge(v, u);
             }
         }
-        //	System.out.println(inter);
         return CCMap;
     }
 
     /**
      * Find all the cliques of specified size in graph G
-     *
      * @param G:         input SimpleGraph
      * @param cliqueSize size of clique
      * @return a list of SimpleGraphs, each contains the verteces of a clique (no edges)
      */
     public static List<SimpleGraph> findCliques(SimpleGraph G, int cliqueSize) {
 
-        SimpleVertex[] vertices = Arrays.asList(G.getVertices().toArray()).toArray(new SimpleVertex[G.getVertices().toArray().length]);
+        SimpleVertex[] vertices = G.getVertices().toArray(new SimpleVertex[G.getVertices().size()]);
         int n = vertices.length;
 
         int[] vertexGroup = new int[cliqueSize];
         int total = Combinations.choose(n, cliqueSize);
 
-        List<SimpleGraph> cliques = new ArrayList<>();
+        List<SimpleGraph> cliques = new ArrayList<SimpleGraph>();
 
         //For each possible combination sizes cliqueSize
         for (int i = 0; i < total; i++) {
@@ -145,7 +138,6 @@ public class GraphAlgorithms {
                 SimpleGraph g = new SimpleGraph();
                 for (ind = 0; ind < cliqueSize; ind++) {
                     g.addVertex(vertices[vertexGroup[ind]]);
-
                 }
                 cliques.add(g);
             }
@@ -178,7 +170,7 @@ public class GraphAlgorithms {
     private static void initialize(SimpleGraph G) {
         //initialization
         dfsTimer = 0;
-        deque = new LinkedList<>();
+        queue = new LinkedList<SimpleVertex>();
         for (SimpleVertex v : G.getVertices()) {
             v.color = Color.WHITE;
             v.parent = null;

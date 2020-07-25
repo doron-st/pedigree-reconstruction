@@ -80,24 +80,11 @@ public class PedigreeReconstructor {
         }
 
         int generation = 1;
-        int startFromGen = 1;
-
         Pedigree fullPed = new Pedigree();
-        //fullPed.readFromFile("D://workspace/pedigree/500_500/3g/pedigree.structure");
-        //fullPed.readFromFile("D://workspace/pedigree/polygamous_160CeuYri_100_150/pedigree.structure");
-        //fullPed.readFromFile("D://workspace/pedigree/200_200_5/pedigree.structure");
-
-
-        if (startFromGen > 1) {
-            ped.readFromFile(outPref + (startFromGen - 1));
-            //ped.readFromFile("D://workspace/pedigree/WFSim/pol200_3g_0.8/pedigree.structure1");
-            ped.calcExpectedFounderAges((startFromGen - 1));
-            generation = (startFromGen);
-        }
 
         boolean synchronous = true;
 
-        for (int gen = generation; gen <= generation; gen++) {
+        for (int gen = generation; gen <= generations; gen++) {
             PedigreeBuilder pedBuilder = new PedigreeBuilder(IBDgraph, outPref + gen, polygamous, synchronous, phasedInput);
             pedBuilder.buildGeneration(ped, gen, fullPed, population);
         }
