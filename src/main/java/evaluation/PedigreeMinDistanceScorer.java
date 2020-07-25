@@ -10,7 +10,7 @@ import pedigree.Pedigree;
 import java.io.IOException;
 import java.util.List;
 
-public class ScorePedigreeMinDistance {
+public class PedigreeMinDistanceScorer {
 
     public static void main(String[] args) {
 

@@ -25,10 +25,6 @@ public class PedScoreCalc extends PedLikelihoodCalcAbs {
         lossArr = new double[numOfIter];
     }
 
-    public double calcLikelihood(Pedigree p, Graph IBDGraph, Map<Integer, Integer> idConversion, int vid1, int vid2) {
-        return -1;
-    }
-
     public void calcLoss(Pedigree pedigree, Graph IBDGraph) {
         double totalLoss = 0;
         for (int i = 0; i < numOfIter; i++) {
@@ -47,7 +43,7 @@ public class PedScoreCalc extends PedLikelihoodCalcAbs {
                     if (e != null)
                         obsFeatures = e.getWeight().asVector();
 
-                    double pairLoss = Math.pow(obsFeatures.get(0) * obsFeatures.get(1) - simFeatures.get(0) * simFeatures.get(1), 2);
+                    double pairLoss = Math.pow(obsFeatures.get(0) - simFeatures.get(0) , 2);
                     //MyLogger.important(v1.getId()+","+v2.getId()+" simFeatures " + simFeatures);
                     //MyLogger.important(v1.getId()+","+v2.getId()+" obsFeatures " + obsFeatures);
                     //MyLogger.important(v1.getId()+","+v2.getId()+" squared loss " + pairLoss);

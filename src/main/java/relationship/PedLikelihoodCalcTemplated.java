@@ -102,7 +102,7 @@ public class PedLikelihoodCalcTemplated extends PedLikelihoodCalcAbs {
 
                 if (Double.isInfinite(pairLogLikelihood)) {
                     Map<String, List<DataPoint>> dataSet = getDataSet(p);
-                    printExplenationForInf(dataSet.get(pairID));
+                    printExplanationForInf(dataSet.get(pairID));
                     pairLogLikelihood = -100;
                 }
                 pairNum++;
@@ -229,7 +229,7 @@ public class PedLikelihoodCalcTemplated extends PedLikelihoodCalcAbs {
 
                 if (Double.isInfinite(pairLogLikelihood)) {
                     Map<String, List<DataPoint>> dataSet = getDataSet(p);
-                    printExplenationForInf(dataSet.get(pairID));
+                    printExplanationForInf(dataSet.get(pairID));
                     pairLogLikelihood = -100;
                 }
 

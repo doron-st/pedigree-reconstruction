@@ -134,7 +134,7 @@ public abstract class PedLikelihoodCalcAbs {
         return kde;
     }
 
-    void printExplenationForInf(List<DataPoint> l) {
+    void printExplanationForInf(List<DataPoint> l) {
         MyLogger.debug("dataSet for pair");
         MyLogger.debug("list size=" + l.size());
         for (int i = 0; i < numOfSimIter; i++) {

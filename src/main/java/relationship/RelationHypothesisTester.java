@@ -58,26 +58,26 @@ public abstract class RelationHypothesisTester {
     }
 
     double calcSibLikelihood(Pedigree ped, int f1, int f2, List<PedVertex> descendants1, List<PedVertex> descendants2) {
-        Pedigree p = new Pedigree(ped);//clone
+        Pedigree pedigree = new Pedigree(ped);//clone
 
         int fatherID;
         int motherID;
 
-        fatherID = p.getNewID();
-        motherID = p.getNewID();
+        fatherID = pedigree.getNewID();
+        motherID = pedigree.getNewID();
 
         //Add nodes that create sibling hypothesis
-        p.addVertex(fatherID);
-        p.addVertex(motherID);
+        pedigree.addVertex(fatherID);
+        pedigree.addVertex(motherID);
 
-        p.getVertex(f1).setFather(fatherID);
-        p.getVertex(f1).setMother(motherID);
-        p.getVertex(f2).setFather(fatherID);
-        p.getVertex(f2).setMother(motherID);
+        pedigree.getVertex(f1).setFather(fatherID);
+        pedigree.getVertex(f1).setMother(motherID);
+        pedigree.getVertex(f2).setFather(fatherID);
+        pedigree.getVertex(f2).setMother(motherID);
 
-        MyLogger.info("calcSibLikelihood::pedSize=" + p.getVertices().size());
+        MyLogger.info("calcSibLikelihood::pedSize=" + pedigree.getVertices().size());
 
-        double l = lCalc.calcLikelihood(p, IBDGraph, idConversion, descendants1, descendants2);
+        double l = lCalc.calcLikelihood(pedigree, IBDGraph, idConversion, descendants1, descendants2);
         MyLogger.info(f1 + "," + f2 + " sibLikelihood=" + l);
 
         return l;

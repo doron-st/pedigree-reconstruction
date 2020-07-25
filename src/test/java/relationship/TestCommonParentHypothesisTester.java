@@ -1,6 +1,7 @@
 package relationship;
 
 
+import com.google.common.io.Resources;
 import graph.Graph;
 import graph.VertexData;
 import misc.MyLogger;
@@ -22,19 +23,18 @@ public class TestCommonParentHypothesisTester {
     @Test
     public void test() {
 
-        String IBDFile = "D://workspace/pedigree/polygamous_160CeuYri_100_150/pedigree.haplotypes.phased.IBD.ages";
-        // demographics file
-        String demographFilename = "D://workspace/pedigree/polygamous_160CeuYri_100_150/pedigree.demographics";
-
+        String demographicsFile = Resources.getResource("pedigree_start10_end10_gen3/pedigree.demographics").getFile();
+        String ibdFile = Resources.getResource("pedigree_start10_end10_gen3/pedigree.ibd").getFile();
+        String pedigreeFile = Resources.getResource("pedigree_start10_end10_gen3/pedigree.structure").getFile();
         Pedigree ped;
-        Graph IBDgraph;
+        Graph ibdGraph;
         try {
-            List<VertexData> persons = Person.listFromDemograph(demographFilename);
+            List<VertexData> persons = Person.listFromDemograph(demographicsFile);
             Population population = new Population(persons);
-            IBDgraph = new Graph(persons);
+            ibdGraph = new Graph(persons);
             MyLogger.info("====================Adding IBD Features edges===============================");
-            IBDFeaturesWeight.readEdgesWeights(IBDgraph, IBDFile, population);        // Adding edges to the graph
-            MyLogger.important("Graph is " + IBDgraph);
+            IBDFeaturesWeight.readEdgesWeights(ibdGraph, ibdFile, population);        // Adding edges to the graph
+            MyLogger.important("Graph is " + ibdGraph);
             ped = new Pedigree(population);
 
         } catch (IOException e) {
@@ -42,47 +42,25 @@ public class TestCommonParentHypothesisTester {
         }
 
         Pedigree fullPed = new Pedigree();
-        fullPed.readFromFile("D://workspace/pedigree/polygamous_160CeuYri_100_150/pedigree.structure");
+        fullPed.readFromFile(pedigreeFile);
 
         boolean phased = true;
-        CommonParentHypothesisTester tester = new CommonParentHypothesisTester(IBDgraph, false, phased);
+        CommonParentHypothesisTester tester = new CommonParentHypothesisTester(ibdGraph, false, phased);
         contraction = new Contraction(ped);
         Graph contractedRelationGraph = contraction.createEdgelessContractedGraph();
 
-        MyLogger.important("Test half-sibs");
-        testCommonParent(ped, IBDgraph, fullPed, tester, contractedRelationGraph, 703, 753);
-        MyLogger.important("Test unrelated");
-        testCommonParent(ped, IBDgraph, fullPed, tester, contractedRelationGraph, 714, 774);
-        MyLogger.important("Test three sibs");
-        List<Person> sib1 = new ArrayList<>();
-        sib1.add((Person) IBDgraph.getVertex(631).getData());
-        sib1.add((Person) IBDgraph.getVertex(662).getData());
-        sib1.add((Person) IBDgraph.getVertex(688).getData());
-        List<Person> sib2 = new ArrayList<>();
-        sib2.add((Person) IBDgraph.getVertex(782).getData());
-        testCommonParent(ped, IBDgraph, fullPed, tester, contractedRelationGraph, sib1, sib2);
-
-        MyLogger.important("Test cousins");
-        testCommonParent(ped, IBDgraph, fullPed, tester, contractedRelationGraph, 641, 649);
-        MyLogger.important("Test half-cousins");
-        testCommonParent(ped, IBDgraph, fullPed, tester, contractedRelationGraph, 782, 631);
         MyLogger.important("Test sibs");
-        testCommonParent(ped, IBDgraph, fullPed, tester, contractedRelationGraph, 785, 809);
-        MyLogger.important("Test avuncular");
-        testCommonParent(ped, IBDgraph, fullPed, tester, contractedRelationGraph, 631, 817);
-        testCommonParent(ped, IBDgraph, fullPed, tester, contractedRelationGraph, 817, 631);
-
+        testCommonParent(ped, ibdGraph, fullPed, tester, contractedRelationGraph, 414, 464);
     }
 
-    private void testCommonParent(Pedigree ped, Graph IBDgraph,
+    private void testCommonParent(Pedigree ped, Graph ibdGraph,
                                   Pedigree fullPed, CommonParentHypothesisTester tester,
                                   Graph contractedRelationGraph, int s1, int s2) {
-
         List<Person> sib1 = new ArrayList<>();
-        sib1.add((Person) IBDgraph.getVertex(s1).getData());
+        sib1.add((Person) ibdGraph.getVertex(s1).getData());
         List<Person> sib2 = new ArrayList<>();
-        sib2.add((Person) IBDgraph.getVertex(s2).getData());
-        testCommonParent(ped, IBDgraph, fullPed, tester, contractedRelationGraph, sib1, sib2);
+        sib2.add((Person) ibdGraph.getVertex(s2).getData());
+        testCommonParent(ped, ibdGraph, fullPed, tester, contractedRelationGraph, sib1, sib2);
     }
 
     private void testCommonParent(Pedigree ped, Graph IBDgraph,
@@ -92,7 +70,7 @@ public class TestCommonParentHypothesisTester {
         List<NucFamily> nucFamilies = new ArrayList<>();
         nucFamilies.add(new NucFamily(new Person(1, "1", 50, false, 1), new Person(2, "2", 50, true, 1), sib1));
         nucFamilies.add(new NucFamily(new Person(3, "3", 50, false, 1), new Person(4, "4", 50, true, 1), sib2));
-//		tester.run(ped, contractedRelationGraph, contraction, nucFamilies, 1, fullPed);
+		tester.run(ped, contraction, nucFamilies);
     }
 
 }

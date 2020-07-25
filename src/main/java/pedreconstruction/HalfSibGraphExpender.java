@@ -8,6 +8,8 @@ import pedigree.Pedigree;
 import java.util.ArrayList;
 import java.util.List;
 
+import static relationship.Relationship.HALF_SIB;
+
 public class HalfSibGraphExpender {
 
     private Graph contractedGraph;
@@ -51,10 +53,10 @@ public class HalfSibGraphExpender {
                     Vertex potentSib = se.getVertex2();
 
                     //treat only ML halfsibs
-                    if (!((RelationshipProbWeight) sv.getEdgeTo(potentSib.getVertexId()).getWeight()).isMaxProbCategory("halfSib"))
+                    if (!((RelationshipProbWeight) sv.getEdgeTo(potentSib.getVertexId()).getWeight()).isMaxProbCategory(HALF_SIB))
                         continue;
 
-                    double myProb = ((RelationshipProbWeight) se.getWeight()).getProb("halfSib");
+                    double myProb = ((RelationshipProbWeight) se.getWeight()).getProb(HALF_SIB);
 
                     for (int mateID : mateIDs) {
                         Vertex mate = contractedGraph.getVertex(contraction.getWrappingSuperVertex(mateID).getId());
@@ -67,9 +69,9 @@ public class HalfSibGraphExpender {
                             } else if (((SuperVertex) sv.getData()).getInnerVertices().size() < ((SuperVertex) mate.getData()).getInnerVertices().size())
                                 continue;
                                 //If sibling group sizes are equal, remove lower prob edge
-                            else if (((RelationshipProbWeight) mate.getEdgeTo(potentSib.getVertexId()).getWeight()).isMaxProbCategory("halfSib")) {
+                            else if (((RelationshipProbWeight) mate.getEdgeTo(potentSib.getVertexId()).getWeight()).isMaxProbCategory(HALF_SIB)) {
                                 Edge mateEdge = mate.getEdgeTo(potentSib.getVertexId());
-                                double mateProb = ((RelationshipProbWeight) mateEdge.getWeight()).getProb("halfSib");
+                                double mateProb = ((RelationshipProbWeight) mateEdge.getWeight()).getProb(HALF_SIB);
                                 if (mateProb < myProb) {
                                     MyLogger.important("Mate " + mate + " has halfSibEdge to " + potentSib + " with lower probability then " + sv + ", removing edge");
                                     mate.removeEdgeTo(potentSib);
@@ -86,7 +88,7 @@ public class HalfSibGraphExpender {
                     Vertex mate1 = contractedGraph.getVertex(contraction.getWrappingSuperVertex(mateID1).getId());
                     Vertex mate2 = contractedGraph.getVertex(contraction.getWrappingSuperVertex(mateID2).getId());
 
-                    if (mate1.hasEdgeTo(mateID2) && ((RelationshipProbWeight) mate1.getEdgeTo(mateID2).getWeight()).isMaxProbCategory("halfSib")) {
+                    if (mate1.hasEdgeTo(mateID2) && ((RelationshipProbWeight) mate1.getEdgeTo(mateID2).getWeight()).isMaxProbCategory(HALF_SIB)) {
 
                         mate1.removeEdgeTo(mate2);
                         mate2.removeEdgeTo(mate1);

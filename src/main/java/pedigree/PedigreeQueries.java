@@ -6,6 +6,8 @@ import misc.MyLogger;
 import graph.Vertex;
 import relationship.RelationshipProbWeight;
 
+import static relationship.Relationship.*;
+
 public class PedigreeQueries {
 
     /**
@@ -21,7 +23,7 @@ public class PedigreeQueries {
         if (w == null)
             return false;
 
-        isRelated = !w.isMaxProbCategory("notRelated");
+        isRelated = !w.isMaxProbCategory(NOT_RELATED);
 
         if (isRelated && degree == 2) {
             if (w.getDegreeProb(1) + w.getDegreeProb(2) < 0.5) {
@@ -47,7 +49,7 @@ public class PedigreeQueries {
 
         for (Vertex u : graph.verticesFromDatas(nucFamily.siblings)) {
             RelationshipProbWeight w = getWeight(graph, u, v);
-            if (w != null && w.isMaxProbCategory("fullNephew")) {
+            if (w != null && w.isMaxProbCategory(FULL_NEPHEW)) {
                 maxNeph++;
             }
         }
@@ -65,7 +67,7 @@ public class PedigreeQueries {
         }
         for (Vertex u : graph.verticesFromDatas(nucFamily.siblings)) {
             RelationshipProbWeight w = getWeight(graph, u, v);
-            if (w != null && w.isMaxProbCategory("fullSib")) {
+            if (w != null && w.isMaxProbCategory(FULL_SIB)) {
                 maxSib++;
             }
         }

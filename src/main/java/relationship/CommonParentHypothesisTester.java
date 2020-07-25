@@ -13,6 +13,11 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import static relationship.Relationship.*;
+
+/**
+ * Test if two sib cliques share a common parent or not
+ */
 public class CommonParentHypothesisTester extends RelationHypothesisTester {
     boolean synchronous;
 
@@ -21,9 +26,9 @@ public class CommonParentHypothesisTester extends RelationHypothesisTester {
         this.synchronous = synchronous;
     }
 
-    public Graph run(Pedigree p, Contraction sibContraction, List<NucFamily> nucFamilies, int gen, Pedigree fullPed) {
+    public Graph run(Pedigree p, Contraction sibContraction, List<NucFamily> nucFamilies) {
 
-        List<VertexData> datas = new ArrayList<VertexData>();
+        List<VertexData> datas = new ArrayList<>();
         for (SuperVertex sv : sibContraction.getSuperVertices())
             datas.add(sv);
         Graph halfSibGraph = new Graph(datas);
@@ -90,8 +95,8 @@ public class CommonParentHypothesisTester extends RelationHypothesisTester {
                 PedVertex f2 = ped.getVertex(candParent2);
 
 
-                Map<Integer, Integer> enumTable = new HashMap<Integer, Integer>();
-                idConversion = new HashMap<Integer, Integer>();
+                Map<Integer, Integer> enumTable = new HashMap<>();
+                idConversion = new HashMap<>();
                 //Pedigree relevantPed = ped.extractSubPedigree(f1,f2,idConversion,enumTable);
                 /**TODO to stop DEBUGGING comment the next two lines, and uncomment line above*/
                 Pedigree relevantPed = ped.extractSubPedigreeNoConversion(f1, f2, idConversion);
@@ -178,9 +183,9 @@ public class CommonParentHypothesisTester extends RelationHypothesisTester {
                 }
 
                 RelationshipProbWeight w = new RelationshipProbWeight();
-                w.setProb("notRelated", likelihoods[0]);
-                w.setProb("halfSib", likelihoods[1]);
-                w.setProb("fullCousin", likelihoods[2]);
+                w.setProb(NOT_RELATED, likelihoods[0]);
+                w.setProb(HALF_SIB, likelihoods[1]);
+                w.setProb(FULL_COUSIN, likelihoods[2]);
                 Edge edge = new BaseEdge(v1, v2, w);
                 Edge backEdge = new BaseEdge(v2, v1, RelationshipProbWeight.switchWeightsDirection(w));
                 halfSibGraph.addEdge(edge);
@@ -221,8 +226,8 @@ public class CommonParentHypothesisTester extends RelationHypothesisTester {
                             //		MyLogger.error("Something is wrong");
 
                             RelationshipProbWeight w = new RelationshipProbWeight();
-                            w.setProb("halfSib", 1.0);
-                            w.setProb("notRelated", 0.0);
+                            w.setProb(HALF_SIB, 1.0);
+                            w.setProb(NOT_RELATED, 0.0);
 
 
                             Edge edge = new BaseEdge(c1, c2, w);
@@ -240,7 +245,7 @@ public class CommonParentHypothesisTester extends RelationHypothesisTester {
     private List<Vertex> getContractedSiblingVertices(
             Graph contractedRelationGraph, Contraction contraction,
             NucFamily fam1) {
-        List<Vertex> sib1 = new ArrayList<Vertex>();
+        List<Vertex> sib1 = new ArrayList<>();
         for (Person p1 : fam1.siblings) {
             Vertex sv = contractedRelationGraph.getVertex(contraction.getWrappingSuperVertex(p1.getId()).getRepresentativeID());
             sib1.add(sv);
@@ -252,7 +257,7 @@ public class CommonParentHypothesisTester extends RelationHypothesisTester {
     private List<Integer> addNuclearFamilyToPedigree(NucFamily fam, Pedigree ped) {
         int fatherID = fam.getFather().getId();
         int motherID = fam.getMother().getId();
-        List<Integer> added = new ArrayList<Integer>();
+        List<Integer> added = new ArrayList<>();
         if (!ped.hasVertex(fatherID)) {
             ped.addVertex(fatherID);
             added.add(fatherID);

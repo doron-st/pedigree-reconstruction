@@ -7,6 +7,8 @@ import pedigree.Pedigree;
 
 import java.util.*;
 
+import static relationship.Relationship.FULL_SIB;
+
 public class SibGraphExpander {
 
     private final Graph contractedGraph;
@@ -46,7 +48,7 @@ public class SibGraphExpander {
             for (int j = i + 1; j < vertices.size(); j++) {
                 Vertex sv2 = vertices.get(j);
                 Edge se = contractedGraph.getEdge(sv1, sv2);
-                if (se != null && ((RelationshipProbWeight) se.getWeight()).isMaxProbCategory("fullSib"))
+                if (se != null && ((RelationshipProbWeight) se.getWeight()).isMaxProbCategory(FULL_SIB))
                     allSuperEdges.add(se);
             }
         }
@@ -55,7 +57,7 @@ public class SibGraphExpander {
 
         int i = 0;
         for (Edge se : allSuperEdges) {
-            probs[i] = ((RelationshipProbWeight) se.getWeight()).getProb("fullSib");
+            probs[i] = ((RelationshipProbWeight) se.getWeight()).getProb(FULL_SIB);
             ind[i] = i;
             i++;
         }
@@ -110,17 +112,17 @@ public class SibGraphExpander {
                 for (Edge se : sv.getEdgeMap().values()) {
                     Vertex potentSib = se.getVertex2();
                     //concern only with full-sib edges
-                    if (((RelationshipProbWeight) se.getWeight()).isMaxProbCategory("fullSib")) {
-                        //	double myProb = ((RelationshipProbWeight)se.getWeight()).getProb("fullSib");
+                    if (((RelationshipProbWeight) se.getWeight()).isMaxProbCategory(FULL_SIB)) {
+                        //	double myProb = ((RelationshipProbWeight)se.getWeight()).getProb(FULL_SIB);
                         for (int mateID : mateIDs) {
                             Vertex mate = contractedGraph.getVertex(contraction.getWrappingSuperVertex(mateID).getId());
-                            if (mate.hasEdgeTo(potentSib.getVertexId()) && ((RelationshipProbWeight) mate.getEdgeTo(potentSib.getVertexId()).getWeight()).isMaxProbCategory("fullSib")) {
+                            if (mate.hasEdgeTo(potentSib.getVertexId()) && ((RelationshipProbWeight) mate.getEdgeTo(potentSib.getVertexId()).getWeight()).isMaxProbCategory(FULL_SIB)) {
                                 MyLogger.important("Mate " + mateID + " has sibEdge to " + potentSib.getVertexId() + " altough " + sv + ", has multiple mates, removing edge");
                                 mate.removeEdgeTo(potentSib);
                                 potentSib.removeEdgeTo(mate);
 
 								/*Edge mateEdge = mate.getEdgeTo(potentSib.getVertexId());
-								double mateProb = ((RelationshipProbWeight)mateEdge.getWeight()).getProb("fullSib");
+								double mateProb = ((RelationshipProbWeight)mateEdge.getWeight()).getProb(FULL_SIB);
 								if(mateProb<myProb){
 									MyLogger.important("Mate " + mateID + " has sibEdge to " + potentSib.getVertexId() +" with lower probability then " + sv + ", removing edge");
 									mate.removeEdgeTo(potentSib);

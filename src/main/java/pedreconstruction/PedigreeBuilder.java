@@ -18,6 +18,9 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static relationship.Relationship.CHILD;
+import static relationship.Relationship.PARENT;
+
 //import prepare.ParentCouplesHypothesisTester;
 
 /**
@@ -108,14 +111,14 @@ public class PedigreeBuilder {
             Contraction sibContraction = new Contraction(nucFamilies);
 
             MyLogger.important("===========Test Nuclear Families for common parent(" + gen + ")==========");
-            Graph halfSibGraph = commonParentHypothesisTester.run(ped, sibContraction, nucFamilies, gen, fullPed);
+            Graph halfSibGraph = commonParentHypothesisTester.run(ped, sibContraction, nucFamilies);
             //commomParentHypTester.debugWithRealRelationships(ped,sibExpendedGraph,contraction,nucFamilies,gen,fullPed);
 
             HalfSibGraphExpander hsge = new HalfSibGraphExpander(halfSibGraph, ped, sibContraction);
             MyLogger.important("===========Remove couple's double halfSib edges if existing(" + gen + ")==========");
             Graph expendedHalfSibGraph = hsge.run();
             //MyLogger.important("===================Expand contracted half-sib graph (" + gen + " )====================");
-            //Graph halfSibExpendedRelationGraph = rge.run("halfSib");
+            //Graph halfSibExpendedRelationGraph = rge.run(HALF_SIB);
             //MyLogger.important("Num of edges=" + halfSibExpendedRelationGraph.getNumOfEdges());
 
             MyLogger.important("======================Partition Half-Sibs(" + gen + ")=====================");
@@ -150,31 +153,31 @@ public class PedigreeBuilder {
                 Vertex u = e.getVertex2();
                 Person otherPerson = (Person) ((SuperVertex) u.getData()).getInnerVertices().get(0).getData();
 
-                if (weight.isMaxProbCategory("parent")) {
-                    if (otherPerson.getGender() && currPerson.getFamily().motherProbability < weight.getProb("parent")) {
+                if (weight.isMaxProbCategory(PARENT)) {
+                    if (otherPerson.getGender() && currPerson.getFamily().motherProbability < weight.getProb(PARENT)) {
                         currPerson.getFamily().mother = otherPerson;
-                        currPerson.getFamily().motherProbability = weight.getProb("parent");
+                        currPerson.getFamily().motherProbability = weight.getProb(PARENT);
                         MyLogger.important(otherPerson.toString() + " is the mother of " + currPerson.toString());
                         totalParents++;
                     }
 
-                    if (!otherPerson.getGender() && currPerson.getFamily().fatherProbability < weight.getProb("parent")) {
+                    if (!otherPerson.getGender() && currPerson.getFamily().fatherProbability < weight.getProb(PARENT)) {
                         currPerson.getFamily().father = otherPerson;
-                        currPerson.getFamily().fatherProbability = weight.getProb("parent");
+                        currPerson.getFamily().fatherProbability = weight.getProb(PARENT);
                         MyLogger.important(otherPerson.toString() + " is the father of " + currPerson.toString());
                         totalParents++;
                     }
                 }
-                if (weight.isMaxProbCategory("child")) {
-                    if (currPerson.getGender() && otherPerson.getFamily().motherProbability < weight.getProb("child")) {
+                if (weight.isMaxProbCategory(CHILD)) {
+                    if (currPerson.getGender() && otherPerson.getFamily().motherProbability < weight.getProb(CHILD)) {
                         otherPerson.getFamily().mother = currPerson;
-                        otherPerson.getFamily().motherProbability = weight.getProb("child");
+                        otherPerson.getFamily().motherProbability = weight.getProb(CHILD);
                         MyLogger.important(currPerson.toString() + " is the mother of " + otherPerson.toString());
                         totalParents++;
                     }
-                    if (!currPerson.getGender() && otherPerson.getFamily().fatherProbability < weight.getProb("child")) {
+                    if (!currPerson.getGender() && otherPerson.getFamily().fatherProbability < weight.getProb(CHILD)) {
                         otherPerson.getFamily().father = currPerson;
-                        otherPerson.getFamily().fatherProbability = weight.getProb("child");
+                        otherPerson.getFamily().fatherProbability = weight.getProb(CHILD);
                         MyLogger.important(currPerson.toString() + " is the father of " + otherPerson.toString());
                         totalParents++;
                     }
@@ -189,13 +192,13 @@ public class PedigreeBuilder {
                 if (otherPerson == currPerson.getFamily().father || otherPerson == currPerson.getFamily().mother) {
                     RelationshipProbWeight weight = (RelationshipProbWeight) e.getWeight();
                     MyLogger.debug(otherPerson.getId() + " " + otherPerson.getAge() + " is a parent of " + currPerson.getId() + " " + currPerson.getAge());
-                    weight.makeDeteministicChoice("parent");
+                    weight.makeDeterministicChoice(PARENT);
                 }
                 if (otherPerson.getFamily().father == currPerson || otherPerson.getFamily().mother == currPerson) {
                     RelationshipProbWeight weight = (RelationshipProbWeight) e.getWeight();
                     //System.out.println("before deterministic choice: " + weight);
                     MyLogger.debug(currPerson.getId() + " is a parent of " + otherPerson.getId());
-                    weight.makeDeteministicChoice("child");
+                    weight.makeDeterministicChoice(CHILD);
                 }
             }
         }

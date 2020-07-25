@@ -10,6 +10,9 @@ import pedigree.Pedigree;
 
 import java.util.*;
 
+import static relationship.Relationship.FULL_SIB;
+import static relationship.Relationship.HALF_SIB;
+
 
 public class SiblingGrouper {
     Graph graph;
@@ -41,10 +44,10 @@ public class SiblingGrouper {
                 //Vertex u = e.getVertex2();
                 RelationshipProbWeight weight = (RelationshipProbWeight) e.getWeight();
 
-                if (weight.isMaxProbCategory("fullSib")) {
+                if (weight.isMaxProbCategory(FULL_SIB)) {
                     MyLogger.debug(v.getVertexId() + "might be sib with " + e.getVertex2().getVertexId());
                     if (!sibGraph.getNeighbors(sibGraph.getVertex(v.getVertexId().toString())).contains(sibGraph.getVertex(e.getVertex2().getVertexId().toString()))) {
-                        sibGraph.createSimpleEdge(v.getVertexId().toString(), e.getVertex2().getVertexId().toString(), weight.getProb("fullSib"));
+                        sibGraph.createSimpleEdge(v.getVertexId().toString(), e.getVertex2().getVertexId().toString(), weight.getProb(FULL_SIB));
                     }
                 }
             }
@@ -100,12 +103,12 @@ public class SiblingGrouper {
                         if (sib1.hasEdgeTo(sib2.getVertexId())) {
                             Edge e = sib1.getEdgeTo(sib2.getVertexId());
                             RelationshipProbWeight w = (RelationshipProbWeight) e.getWeight();
-                            if (w.isMaxProbCategory("halfSib"))
+                            if (w.isMaxProbCategory(HALF_SIB))
                                 halfSibProbSum++;
                         } else if (sib2.hasEdgeTo(sib1.getVertexId())) {
                             Edge e = sib2.getEdgeTo(sib1.getVertexId());
                             RelationshipProbWeight w = (RelationshipProbWeight) e.getWeight();
-                            if (w.isMaxProbCategory("halfSib"))
+                            if (w.isMaxProbCategory(HALF_SIB))
                                 halfSibProbSum++;
                         }
                     }
@@ -233,7 +236,7 @@ public class SiblingGrouper {
 */
 
     /**
-     * @param maxCliqueSize
+     * @param maxSize
      * @param g             - Connected component graph
      * @param list          - list of connected components in sib-Graph
      * @return true if CC was to large, in this case need to skip addition of sibs,

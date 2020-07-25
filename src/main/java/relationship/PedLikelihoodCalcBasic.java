@@ -84,7 +84,7 @@ public class PedLikelihoodCalcBasic extends PedLikelihoodCalcAbs {
                 //MyLogger.important("obs=" + obsFeatures + "exp=" + kdeMap.get(pairID).getNearby(obsFeatures));
 
                 if (Double.isInfinite(pairLogLikelihood)) {
-                    printExplenationForInf(simDataSets.get(pairID));
+                    printExplanationForInf(simDataSets.get(pairID));
                     pairLogLikelihood = -1000; //minimal pair score
                 }
                 pairNum++;

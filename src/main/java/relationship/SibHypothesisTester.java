@@ -6,9 +6,12 @@ import pedreconstruction.Contraction;
 import pedigree.Pedigree;
 import pedigree.Pedigree.PedVertex;
 
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import static relationship.Relationship.*;
 
 
 public class SibHypothesisTester extends RelationHypothesisTester {
@@ -27,8 +30,7 @@ public class SibHypothesisTester extends RelationHypothesisTester {
     /**
      * Test all contracted founder nodes of pedigree for having one of the following relationships:
      * {fullsib,halfsib,parentChild,childParent,other}
-     *
-     * @return - The contracted relationship graph
+     * Add edge between nodes with fullsib as the maximum likelihood relationship
      */
     public void run(Pedigree ped, Graph contractedRelationGraph, List<Vertex> candidates, int gen, Pedigree fullPed) {
 
@@ -50,14 +52,13 @@ public class SibHypothesisTester extends RelationHypothesisTester {
                 if (f1.getId() >= f2.getId())
                     continue;
 
-                idConversion = new HashMap<Integer, Integer>();
-                Map<Integer, Integer> enumTable = new HashMap<Integer, Integer>();
+                idConversion = new HashMap<>();
+                Map<Integer, Integer> enumTable;
 
                 //MyLogger.important("Testing " + f1 + " " + f2);
 
                 //Pedigree relevantPed = ped.extractSubPedigree(f1,f2,idConversion,enumTable);
-                /**TODO to stop DEBUGGING comment the next two lines, and uncomment line above*/
-                idConversion = new HashMap<Integer, Integer>();//override field
+                idConversion = new HashMap<>();//override field
                 Pedigree relevantPed = ped.extractSubPedigreeNoConversion(f1, f2, idConversion);
                 enumTable = idConversion;
 
@@ -71,8 +72,7 @@ public class SibHypothesisTester extends RelationHypothesisTester {
                 List<PedVertex> descendants2 = relevantPed.getDescendants(f2NewID);
 
                 double[] likelihoods = new double[9];
-                for (int i = 0; i < likelihoods.length; i++)
-                    likelihoods[i] = Double.NEGATIVE_INFINITY;
+                Arrays.fill(likelihoods, Double.NEGATIVE_INFINITY);
 
                 RelationshipProbWeight w = new RelationshipProbWeight();
                 /*
@@ -158,23 +158,23 @@ public class SibHypothesisTester extends RelationHypothesisTester {
 
                 if (gen == 1) {
                     if (ped.getPopulation().getAge(f1.getId()) <= ped.getPopulation().getAge(f2.getId()))
-                        w.setProb("parent", parentChildLikelihood);
+                        w.setProb(PARENT, parentChildLikelihood);
                     else
-                        w.setProb("child", parentChildLikelihood);
+                        w.setProb(CHILD, parentChildLikelihood);
                 } else {
                     if (f1Parent)
-                        w.setProb("parent", parentChildLikelihood);
+                        w.setProb(PARENT, parentChildLikelihood);
                     else
-                        w.setProb("child", parentChildLikelihood);
+                        w.setProb(CHILD, parentChildLikelihood);
                 }
 
-                w.setProb("fullSib", sibLikelihood);
-                w.setProb("halfSib", halfSibLikelihood);
-                w.setProb("fullUncle", avuncularLikelihood);
-                w.setProb("halfUncle", halfAvuncularLikelihood);
-                w.setProb("fullCousin", cousLikelihood);
-                w.setProb("halfCousin", halfCousinLikelihood);
-                w.setProb("notRelated", unrelatedLikelihood);
+                w.setProb(FULL_SIB, sibLikelihood);
+                w.setProb(HALF_SIB, halfSibLikelihood);
+                w.setProb(FULL_UNCLE, avuncularLikelihood);
+                w.setProb(HALF_UNCLE, halfAvuncularLikelihood);
+                w.setProb(FULL_COUSIN, cousLikelihood);
+                w.setProb(HALF_COUSIN, halfCousinLikelihood);
+                w.setProb(NOT_RELATED, unrelatedLikelihood);
 
                 Edge edge = new BaseEdge(contractedRelationGraph.getVertex(f1.getId()), contractedRelationGraph.getVertex(f2.getId()), w);
                 Edge backEdge = new BaseEdge(contractedRelationGraph.getVertex(f2.getId()), contractedRelationGraph.getVertex(f1.getId()), RelationshipProbWeight.switchWeightsDirection(w));
@@ -182,7 +182,6 @@ public class SibHypothesisTester extends RelationHypothesisTester {
                 contractedRelationGraph.addEdge(backEdge);
             }
         }
-        return;
     }
 
 
@@ -202,14 +201,14 @@ public class SibHypothesisTester extends RelationHypothesisTester {
                 RelationshipProbWeight w = new RelationshipProbWeight();
 
                 if (areSibs(s1, s2, fullPed)) {
-                    w.setProb("fullSib", 1.0);
-                    w.setProb("notRelated", 0.0);
+                    w.setProb(FULL_SIB, 1.0);
+                    w.setProb(NOT_RELATED, 0.0);
                     MyLogger.important(s1 + " and " + s2 + " are sibs");
 
                 }
                 if (areParentChild(s1, s2, fullPed)) {
-                    w.setProb("child", 1.0);
-                    w.setProb("notRelated", 0.0);
+                    w.setProb(CHILD, 1.0);
+                    w.setProb(NOT_RELATED, 0.0);
                     MyLogger.important(s1 + " and " + s2 + " are child-parent");
                 }
 
@@ -225,12 +224,6 @@ public class SibHypothesisTester extends RelationHypothesisTester {
     /**
      * Test hypothesis f1 parent of f2 (with all possible mates)
      * and f2 parent of f1 (with all possible mates)
-     *
-     * @param relevantPed
-     * @param f1NewID
-     * @param f2NewID
-     * @param additionalResultsArr
-     * @return
      */
     private double testPossibleParanthoodHypothesis(Pedigree relevantPed,
                                                     int f1NewID, int f2NewID, List<PedVertex> descendants1, List<PedVertex> descendants2, int[] additionalResultsArr) {

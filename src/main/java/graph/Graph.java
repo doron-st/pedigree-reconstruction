@@ -151,9 +151,9 @@ public class Graph implements Serializable {
 		if(e1==null && e2==null)
 			return false;
 		if(e1!=null)
-			isRelated =  !((RelationshipProbWeight)e1.getWeight()).isMaxProbCategory("notRelated");
+			isRelated =  !((RelationshipProbWeight)e1.getWeight()).isMaxProbCategory(NOT_RELATED);
 		if(e2!=null)
-			isRelated =  !((RelationshipProbWeight)e2.getWeight()).isMaxProbCategory("notRelated");
+			isRelated =  !((RelationshipProbWeight)e2.getWeight()).isMaxProbCategory(NOT_RELATED);
 		
 		if(isRelated && degree==2){
 			RelationshipProbWeight w =null;
