@@ -1,4 +1,4 @@
-package relationship;
+package evaluation;
 
 import graph.Edge;
 import graph.Graph;
@@ -7,6 +7,7 @@ import jsat.linear.Vec;
 import misc.VecImpl;
 import pedigree.Pedigree;
 import pedigree.Pedigree.PedVertex;
+import relationship.PedLikelihoodCalcAbs;
 
 import java.util.List;
 import java.util.Map;
@@ -71,7 +72,7 @@ public class PedScoreCalc extends PedLikelihoodCalcAbs {
     }
 
     @Override
-    public double calcLikelihood(Pedigree p, Graph iBDgraph,
+    public double calcLikelihood(Pedigree p, Graph ibdGraph,
                                  Map<Integer, Integer> idConversion, List<PedVertex> descendants1,
                                  List<PedVertex> descendants2) {
         // TODO Auto-generated method stub

@@ -1,7 +1,5 @@
 package relationship;
 
-import java.util.HashMap;
-
 public enum Relationship {
     FULL_SIB,
     HALF_SIB,

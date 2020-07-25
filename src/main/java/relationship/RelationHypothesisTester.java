@@ -19,7 +19,6 @@ public abstract class RelationHypothesisTester {
     NormalDistribution parentAgeDifDist = new NormalDistribution(25, 10);
     int numOfSibs = 0;
     int numOfHalfSibs = 0;
-    int mistakes = 0;
     boolean phased;
 
     public RelationHypothesisTester(Graph IBDGraph, boolean phased) {
@@ -92,7 +91,7 @@ public abstract class RelationHypothesisTester {
         //Add nodes that create parent hypothesis
         int newMateID = -2;
 
-        List<Integer> possibleMateIDs = new ArrayList<Integer>();
+        List<Integer> possibleMateIDs = new ArrayList<>();
         possibleMateIDs.add(newMateID);
 
         //Find all possible mates
@@ -264,29 +263,10 @@ public abstract class RelationHypothesisTester {
         return false;
     }
 
-    boolean areHalfSibs(SuperVertex s1, SuperVertex s2, Pedigree p) {
-        for (Vertex v1 : s1.getInnerVertices()) {
-            for (Vertex v2 : s2.getInnerVertices()) {
-                if (areHalfSibs(v1.getVertexId(), v2.getVertexId(), p))
-                    return true;
-            }
-        }
-        return false;
-    }
-
     boolean areSibs(int id1, int id2, Pedigree p) {
         if (id1 != id2 && p.getVertex(id1).getFatherId() == p.getVertex(id2).getFatherId() &&
                 p.getVertex(id1).getMotherId() == p.getVertex(id2).getMotherId()) {
             MyLogger.info("Found sibs in pedigree " + id1 + " " + id2);
-            return true;
-        }
-        return false;
-    }
-
-    boolean areHalfSibs(int id1, int id2, Pedigree p) {
-        if (id1 != id2 && (p.getVertex(id1).getFatherId() == p.getVertex(id2).getFatherId() ||
-                p.getVertex(id1).getMotherId() == p.getVertex(id2).getMotherId()) && !areSibs(id1, id2, p)) {
-            MyLogger.info("Found half-sibs in pedigree " + id1 + " " + id2);
             return true;
         }
         return false;
@@ -301,23 +281,6 @@ public abstract class RelationHypothesisTester {
             }
         }
         return false;
-    }
-
-
-    public void printPairWiseIBD(SuperVertex s1, SuperVertex s2, Pedigree ped) {
-        Vertex v1 = s1.getInnerVertices().get(0);
-        Vertex v2 = s2.getInnerVertices().get(0);
-        MyLogger.important("IBD for descendants of " + s1 + "," + s2);
-        for (PedVertex des1 : ped.getAllDescendants(v1.getVertexId())) {
-            for (PedVertex des2 : ped.getAllDescendants(v2.getVertexId())) {
-                Edge e = IBDGraph.getUndirectedEdge(des1.getId(), des2.getId());
-                if (des1.isAlive() && des2.isAlive() && des1 != des2)
-                    if (e != null)
-                        MyLogger.important(des1.getId() + "," + des2.getId() + " IBD features=" + IBDGraph.getUndirectedEdge(des1.getId(), des2.getId()).getWeight());
-                    else
-                        MyLogger.important(des1.getId() + "," + des2.getId() + " IBD features=0,0");
-            }
-        }
     }
 }
 

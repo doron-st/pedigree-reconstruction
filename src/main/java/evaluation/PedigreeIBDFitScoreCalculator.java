@@ -10,7 +10,6 @@ import pedigree.Pedigree;
 import pedigree.Person;
 import pedreconstruction.IBDFeaturesWeight;
 import common.Population;
-import relationship.PedScoreCalc;
 
 import java.io.IOException;
 import java.util.List;

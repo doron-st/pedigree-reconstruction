@@ -46,7 +46,7 @@ public class TestSibHypothesis {
         Pedigree fullPed = new Pedigree();
         fullPed.readFromFile(pedigreeFile);
 
-        SibHypothesisTester tester = new SibHypothesisTester(ibdGraph, false, true, true);
+        SibHypothesisTester tester = new SibHypothesisTester(ibdGraph, false, true);
         Contraction contraction = new Contraction(ped);
         Graph contractedRelationGraph = contraction.createEdgelessContractedGraph();
 

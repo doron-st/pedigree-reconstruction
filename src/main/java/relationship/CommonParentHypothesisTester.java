@@ -3,15 +3,12 @@ package relationship;
 import graph.*;
 import misc.MyLogger;
 import pedigree.NucFamily;
-import pedigree.Person;
-import pedreconstruction.Contraction;
 import pedigree.Pedigree;
 import pedigree.Pedigree.PedVertex;
+import pedigree.Person;
+import pedreconstruction.Contraction;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static relationship.Relationship.*;
 
@@ -27,19 +24,13 @@ public class CommonParentHypothesisTester extends RelationHypothesisTester {
     }
 
     public Graph run(Pedigree p, Contraction sibContraction, List<NucFamily> nucFamilies) {
-
-        List<VertexData> datas = new ArrayList<>();
-        for (SuperVertex sv : sibContraction.getSuperVertices())
-            datas.add(sv);
+        List<VertexData> datas = new ArrayList<>(sibContraction.getSuperVertices());
         Graph halfSibGraph = new Graph(datas);
 
         //clone pedigree
         Pedigree ped = new Pedigree(p);
 
-        //if(gen==1)
         lCalc = new PedLikelihoodCalcInheritancePaths(50, phased);
-        //else
-        //lCalc = new PedLikelihoodCalcBasic(20);
 
         for (NucFamily fam1 : nucFamilies) {
             //	MyLogger.important("Testing\n" + fam1);
@@ -58,17 +49,14 @@ public class CommonParentHypothesisTester extends RelationHypothesisTester {
                 if (!fam1.getFather().isAlive() && !fam2.getFather().isAlive()) {
                     candParent1 = fam1.getFather().getId();
                     candParent2 = fam2.getFather().getId();
-                    //MyLogger.important("Both fathers are dead:" + candParent1 + ","+candParent2);
-                } else if (!fam1.getMother().isAlive() && !fam2.getMother().isAlive()) {
+                }
+                else if (!fam1.getMother().isAlive() && !fam2.getMother().isAlive()) {
                     candParent1 = fam1.getMother().getId();
                     candParent2 = fam2.getMother().getId();
-                    //MyLogger.important("Both mothers are dead:" + candParent1 + ","+candParent2);
                     isFather = false;
-                } else
+                }
+                else
                     continue;
-
-
-                //MyLogger.important("CP Testing\n" + fam1 + "\n" + fam2);
 
                 //If detected living parent, don't compare to its family (will cause a loop)
                 //Assumes no incest
@@ -95,17 +83,13 @@ public class CommonParentHypothesisTester extends RelationHypothesisTester {
                 PedVertex f2 = ped.getVertex(candParent2);
 
 
-                Map<Integer, Integer> enumTable = new HashMap<>();
+                Map<Integer, Integer> enumTable;
                 idConversion = new HashMap<>();
-                //Pedigree relevantPed = ped.extractSubPedigree(f1,f2,idConversion,enumTable);
-                /**TODO to stop DEBUGGING comment the next two lines, and uncomment line above*/
                 Pedigree relevantPed = ped.extractSubPedigreeNoConversion(f1, f2, idConversion);
                 enumTable = idConversion;
 
                 idConversion = enumTable;
-                //Pedigree relevantPed = ped.extractSubPedigree(f1,f2,idConversion,enumTable);
 
-                //MyLogger.important("relevantPed=" + relevantPed);
                 //Remove extra vertices from pedigree
                 added1.addAll(added2);
                 for (int addedID : added1) {
@@ -123,8 +107,7 @@ public class CommonParentHypothesisTester extends RelationHypothesisTester {
                     continue;
 
                 double[] likelihoods = new double[4];
-                for (int i = 0; i < likelihoods.length; i++)
-                    likelihoods[i] = Double.NEGATIVE_INFINITY;
+                Arrays.fill(likelihoods, Double.NEGATIVE_INFINITY);
 
                 /*
                  * Test relatedness hypothesis
@@ -164,10 +147,7 @@ public class CommonParentHypothesisTester extends RelationHypothesisTester {
                 int age2 = ageSum / fam2.siblings.size();
 
                 if (!synchronous)
-                    weighProbabilitiesWithAgeDiff(likelihoods, ped, Math.abs(age1 - age2));
-
-                //List<Vertex> sib1 = getContractedSiblingVertices(contractedRelationGraph, contraction, fam1);
-                //List<Vertex> sib2 = getContractedSiblingVertices(contractedRelationGraph, contraction, fam2);
+                    weighProbabilitiesWithAgeDiff(likelihoods, Math.abs(age1 - age2));
 
                 if (isMaxFromArray(likelihoods[1], likelihoods))
                     MyLogger.important("Found potential common-parent " + fam1.siblings + "," + fam2.siblings);
@@ -177,9 +157,6 @@ public class CommonParentHypothesisTester extends RelationHypothesisTester {
 
                 if (isMaxFromArray(likelihoods[1], likelihoods)) {
                     numOfHalfSibs++;
-                    //	IBDFeaturesWeight w = (IBDFeaturesWeight) IBDgraph.getUndirectedEdge(c1.getVertexId(), c2.getVertexId()).getWeight();
-                    //	if(w.getSegmentNum()<20)
-                    //		MyLogger.error("Something is wrong");
                 }
 
                 RelationshipProbWeight w = new RelationshipProbWeight();
@@ -195,64 +172,6 @@ public class CommonParentHypothesisTester extends RelationHypothesisTester {
         return halfSibGraph;
     }
 
-
-    public Graph debugWithRealRelationships(Pedigree p, Graph contractedRelationGraph, Contraction contraction, List<NucFamily> nucFamilies, int gen, Pedigree fullPed) {
-
-        for (NucFamily fam1 : nucFamilies) {
-            //MyLogger.important("Testing\n" + fam1);
-            if (fam1.getFather().isAlive() && fam1.getMother().isAlive())
-                continue;
-            for (NucFamily fam2 : nucFamilies) {
-
-                //Already tested other direction, or same family
-                if (fam1.getFather().getId() >= fam2.getFather().getId())
-                    continue;
-
-                List<Vertex> sib1 = getContractedSiblingVertices(contractedRelationGraph, contraction, fam1);
-                List<Vertex> sib2 = getContractedSiblingVertices(contractedRelationGraph, contraction, fam2);
-
-                for (Vertex c1 : sib1) {
-                    for (Vertex c2 : sib2) {
-                        //In case sib1 & sib2 containes a marriage couple, skip adding self edge
-                        if (c1.equals(c2))
-                            MyLogger.error("Should not be in one super vertex");//continue;
-
-                        if (areHalfSibs((SuperVertex) c1.getData(), (SuperVertex) c2.getData(), fullPed)) {
-                            numOfHalfSibs++;
-                            MyLogger.important(numOfHalfSibs + ") Found real halfSibs! " + c1 + "," + c2);
-
-                            //	IBDFeaturesWeight w = (IBDFeaturesWeight) IBDgraph.getUndirectedEdge(c1.getVertexId(), c2.getVertexId()).getWeight();
-                            //	if(w.getSegmentNum()<20)
-                            //		MyLogger.error("Something is wrong");
-
-                            RelationshipProbWeight w = new RelationshipProbWeight();
-                            w.setProb(HALF_SIB, 1.0);
-                            w.setProb(NOT_RELATED, 0.0);
-
-
-                            Edge edge = new BaseEdge(c1, c2, w);
-                            Edge backEdge = new BaseEdge(c2, c1, RelationshipProbWeight.switchWeightsDirection(w));
-                            contractedRelationGraph.addEdge(edge);
-                            contractedRelationGraph.addEdge(backEdge);
-                        }
-                    }
-                }
-            }
-        }
-        return contractedRelationGraph;
-    }
-
-    private List<Vertex> getContractedSiblingVertices(
-            Graph contractedRelationGraph, Contraction contraction,
-            NucFamily fam1) {
-        List<Vertex> sib1 = new ArrayList<>();
-        for (Person p1 : fam1.siblings) {
-            Vertex sv = contractedRelationGraph.getVertex(contraction.getWrappingSuperVertex(p1.getId()).getRepresentativeID());
-            sib1.add(sv);
-            //MyLogger.info("For person " + p1 + " added " + sv.getVertexId());
-        }
-        return sib1;
-    }
 
     private List<Integer> addNuclearFamilyToPedigree(NucFamily fam, Pedigree ped) {
         int fatherID = fam.getFather().getId();
@@ -274,38 +193,10 @@ public class CommonParentHypothesisTester extends RelationHypothesisTester {
         return added;
     }
 
-    void printSibDebugInfo(Pedigree fullPed, Pedigree ped, int numOfSibs, SuperVertex s1, SuperVertex s2, double[] likelihoods,
-                           double sibLikelihood, boolean half) {
-        String desc;
-        if (half) {
-            desc = "half-sibs";
-        } else {
-            desc = "sibs";
-        }
-
-        if (isMaxFromArray(sibLikelihood, likelihoods)) {
-            MyLogger.important(numOfSibs + ") Found potential " + desc + "! " + s1 + "," + s2 + " L=" + sibLikelihood);
-            if ((half && !areHalfSibs(s1, s2, fullPed)) || (!half && !areSibs(s1, s2, fullPed))) {
-                MyLogger.warn((mistakes++) + ")Potential " + desc + " are false! " + s1 + "," + s2);
-                MyLogger.warn("nr=" + likelihoods[0] + ",hs=" + likelihoods[1] + ",cous=" + likelihoods[2] + ",avunc=" + likelihoods[3]);
-                printPairWiseIBD(s1, s2, ped);
-            }
-        } else if ((half && areHalfSibs(s1, s2, fullPed)) || (!half && areSibs(s1, s2, fullPed))) {
-            MyLogger.warn((mistakes++) + ") " + desc + " are not max category! " + s1 + "," + s2);
-            if (s1.getInnerVertices().size() == 1 && s2.getInnerVertices().size() == 1)
-                MyLogger.warn("IBD features=" + IBDGraph.getUndirectedEdge(s1.getId(), s2.getId()).getWeight());
-            else
-                printPairWiseIBD(s1, s2, ped);
-            MyLogger.warn("nr=" + likelihoods[0] + ",hs=" + likelihoods[1] + ",cous=" + likelihoods[2] + ",avunc=" + likelihoods[3]);
-        }
-    }
-
-    private void weighProbabilitiesWithAgeDiff(double[] likelihoods, Pedigree ped, int ageDiff) {
+    private void weighProbabilitiesWithAgeDiff(double[] likelihoods, int ageDiff) {
         double samePersonLikelihood = likelihoods[1];
         double sibLikelihood = likelihoods[2];
         double parentChildLikelihood = likelihoods[3];
-
-        //MyLogger.warn(ageDiff + " before: same=" + likelihoods[1] + " sib=" + likelihoods[2] + " parent=" + likelihoods[3]);
 
         //Weight by age difference
         double probSum = sibLikelihood + samePersonLikelihood + parentChildLikelihood;
@@ -316,11 +207,9 @@ public class CommonParentHypothesisTester extends RelationHypothesisTester {
         double parentAgeDiffProb = parentAgeDifDist.density(ageDiff);
 
         double combinedProb = sibAgeDiffProb * sibLikelihood + parentAgeDiffProb * parentChildLikelihood + sibAgeDiffProb * samePersonLikelihood;
-        //fix poserior probabilities, by ageDiff weight
+        //fix posterior probabilities, by ageDiff weight
         likelihoods[1] = ((sibAgeDiffProb * samePersonLikelihood) / combinedProb) * probSum;
         likelihoods[2] = ((sibAgeDiffProb * sibLikelihood) / combinedProb) * probSum;
         likelihoods[3] = ((parentAgeDiffProb * parentChildLikelihood) / combinedProb) * probSum;
-
-        //MyLogger.warn("after: same=" + likelihoods[1] + " sib=" + likelihoods[2] + " parent=" + likelihoods[3]);
     }
 }

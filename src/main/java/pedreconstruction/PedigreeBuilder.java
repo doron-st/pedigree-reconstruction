@@ -48,7 +48,7 @@ public class PedigreeBuilder {
 
         NextIDGenerator nextIDGen = new NextIDGenerator(gen);
 
-        SibHypothesisTester sibHypTester = new SibHypothesisTester(IBDGraph, synchronous, polygamous, phased);
+        SibHypothesisTester sibHypTester = new SibHypothesisTester(IBDGraph, synchronous, phased);
         CommonParentHypothesisTester commonParentHypothesisTester = new CommonParentHypothesisTester(IBDGraph, synchronous, phased);
 
         MyLogger.important(">>> buildGeneration" + gen);

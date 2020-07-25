@@ -28,20 +28,12 @@ public class RelationshipProbWeight implements Weight {
             map.put(relationship, 0.0);
     }
 
-    public Double getSumOfProbs() {
-        Double sum = 0.0;
-        for (Relationship category : map.keySet()) {
-            sum += map.get(category);
-        }
-        return sum;
-    }
-
 
     public Double getProb(Relationship categoryName) {
         if (map.containsKey(categoryName))
             return map.get(categoryName);
         else
-            throw new RuntimeErrorException(null, "Non existant key: " + categoryName + ", in RelationshipProbWeight::getProb");
+            throw new RuntimeErrorException(null, "Non existent key: " + categoryName + ", in RelationshipProbWeight::getProb");
     }
 
     public void setProb(Relationship relationship, Double value) {
@@ -49,7 +41,7 @@ public class RelationshipProbWeight implements Weight {
             map.remove(relationship);
             map.put(relationship, value);
         } else
-            throw new RuntimeErrorException(null, "Non existant key: " + relationship + ", in RelationshipProbWeight::setProb");
+            throw new RuntimeErrorException(null, "Non existent key: " + relationship + ", in RelationshipProbWeight::setProb");
     }
 
     public void makeDeterministicChoice(Relationship selected) {
@@ -105,31 +97,6 @@ public class RelationshipProbWeight implements Weight {
         switched.setProb(CHILD, weight.getProb(PARENT));
         switched.setProb(NOT_RELATED, weight.getProb(NOT_RELATED));
         return switched;
-    }
-
-    public int compareTo(RelationshipProbWeight backWeight) {
-        for (Relationship relation : this.map.keySet()) {
-            double myProb = getProb(relation);
-            double otherProb = backWeight.getProb(relation);
-            if (Math.abs(myProb - otherProb) > 0.0001) {
-                return 1;
-            }
-        }
-        return 0;
-    }
-
-    public double getDegreeProb(int i) {
-        if (i == 1) {
-            return getProb(FULL_SIB) + getProb(HALF_SIB) + getProb(PARENT) + getProb(CHILD);
-        }
-        if (i == 2) {
-            return getProb(FULL_COUSIN) + getProb(HALF_COUSIN) + getProb(FULL_UNCLE) + getProb(HALF_UNCLE)
-                    + getProb(FULL_NEPHEW) + getProb(HALF_NEPHEW);
-        }
-        if (i > 2) {
-            return getSumOfProbs();
-        }
-        return 0;
     }
 
     public DataPoint asDataPoint() {

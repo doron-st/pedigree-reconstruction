@@ -34,7 +34,7 @@ public abstract class PedLikelihoodCalcAbs {
      * Create IBD feature distribution for every pair of living individuals in pedigree
      * Simulate recombination process N times
      **/
-    Map<String, List<DataPoint>> sampleFeaturesFromInheritanceSpace(Pedigree pedigree, boolean addNoise) {
+    protected Map<String, List<DataPoint>> sampleFeaturesFromInheritanceSpace(Pedigree pedigree, boolean addNoise) {
         Map<String, List<DataPoint>> simDataSets = new HashMap<>();
         for (int i = 1; i <= numOfSimIter; i++) {
             MyLogger.debug("Simulate recombinations of pedigree");
@@ -128,8 +128,6 @@ public abstract class PedLikelihoodCalcAbs {
             throw new RuntimeErrorException(new Error("Null dataSet"));
         }
         kde.setUsingDataList(dataSet);
-        //MyLogger.important("BW = " + kde.getBandwith());
-
         kde.setBandwith(8);
         return kde;
     }
