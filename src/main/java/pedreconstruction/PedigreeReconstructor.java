@@ -20,13 +20,16 @@ public class PedigreeReconstructor {
     private final String outPref;
     private final boolean polygamous;
     private final boolean phasedInput;
+    private final int generations;
 
-    public PedigreeReconstructor(String ibdFilename, String demographicsFilename, String outPref, boolean polygamous, boolean phasedInput) {
+    public PedigreeReconstructor(String ibdFilename, String demographicsFilename, String outPref, boolean polygamous,
+                                 boolean phasedInput, int generations) {
         this.ibdFilename = ibdFilename;
         this.demographicsFilename = demographicsFilename;
         this.outPref = outPref;
         this.polygamous = polygamous;
         this.phasedInput = phasedInput;
+        this.generations = generations;
 
         if (polygamous)
             MyLogger.important("Polygamous mode!");
@@ -54,6 +57,9 @@ public class PedigreeReconstructor {
                 .setDefault("false")
                 .action(Arguments.storeTrue())
                 .help("phased input");
+        parser.addArgument("-generations")
+                .setDefault(4)
+                .help("number of generations to reconstruct");
         return parser.parseArgsOrFail(argv);
     }
 
@@ -68,7 +74,7 @@ public class PedigreeReconstructor {
             MyLogger.info("====================Adding IBD Features edges===============================");
             IBDFeaturesWeight.readEdgesWeights(IBDgraph, ibdFilename, population);// Adding edges to the graph
             MyLogger.info("Graph is " + IBDgraph);
-            ped = new Pedigree(population, false);
+            ped = new Pedigree(population);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -91,7 +97,7 @@ public class PedigreeReconstructor {
 
         boolean synchronous = true;
 
-        for (int gen = generation; gen <= 4; gen++) {
+        for (int gen = generation; gen <= generation; gen++) {
             PedigreeBuilder pedBuilder = new PedigreeBuilder(IBDgraph, outPref + gen, polygamous, synchronous, phasedInput);
             pedBuilder.buildGeneration(ped, gen, fullPed, population);
         }
@@ -104,8 +110,10 @@ public class PedigreeReconstructor {
         String out = args.getString("outDir");
         boolean polygamous = args.getBoolean("polygamous");
         boolean phasedInput = args.getBoolean("phased");
+        int generations = args.get("generations");
 
-        PedigreeReconstructor pedigreeReconstructor = new PedigreeReconstructor(ibdFile, demographFilename, out, polygamous, phasedInput);
+        PedigreeReconstructor pedigreeReconstructor = new PedigreeReconstructor(
+                ibdFile, demographFilename, out, polygamous, phasedInput, generations);
         pedigreeReconstructor.reconstruct();
     }
 }

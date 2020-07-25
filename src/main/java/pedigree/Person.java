@@ -11,32 +11,20 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.StringTokenizer;
 
-/**
- *
- */
 public class Person implements VertexData, Comparable<Person> {
     private static final long serialVersionUID = -2041304994757775928L;
     // -- Details of the person
-    private final Integer id;
-    private final String idStr;
-    private Integer age;
-    private final Boolean gender; //true==female
+    private final int id;
+    private int age;
+    private final boolean gender; //true==female
 
     // Members in the person's family - after inferring the reconstruct
     private final Family family = new Family();
     private final Boolean isAlive;
-    private int discoveryGeneration = -1;
+    private int discoveryGeneration;
 
-    /**
-     * @param id
-     * @param personIdStr
-     * @param age
-     * @param gender
-     * @param discoveryGeneration
-     */
     public Person(Integer id, String personIdStr, Integer age, Boolean gender, int discoveryGeneration) {
         this.id = id;
-        this.idStr = personIdStr;
         this.age = age;
         this.gender = gender;
         this.discoveryGeneration = discoveryGeneration;
@@ -45,10 +33,6 @@ public class Person implements VertexData, Comparable<Person> {
 
     public Integer getId() {
         return id;
-    }
-
-    public String getIdString() {
-        return idStr;
     }
 
     public Integer getAge() {
@@ -90,13 +74,13 @@ public class Person implements VertexData, Comparable<Person> {
     /**
      * read person list from demographics file
      *
-     * @param demographFilename - demographies file
-     * @return map of the person id to the person data
+     * @param demographFilename - demographics file
+     * @return list of person data
      * @throws IOException - in case of a problem reading the file
      */
     public static List<VertexData> listFromDemograph(String demographFilename) throws IOException {
         MyLogger.important("Creating person list from " + demographFilename);
-        List<VertexData> persons = new ArrayList<VertexData>();
+        List<VertexData> persons = new ArrayList<>();
 
         boolean demographicsHasHeader = true;
         BufferedReader fileReader = new BufferedReader(new FileReader(new File(demographFilename)));
@@ -113,9 +97,9 @@ public class Person implements VertexData, Comparable<Person> {
             String personAgeStr = nextLineTokenizer.nextToken();
             String personGenderStr = nextLineTokenizer.nextToken();
 
-            Integer id = i;
+            Integer id = Integer.parseInt(personIdStr);
             Integer age = Integer.parseInt(personAgeStr);
-            Boolean gender = null;
+            Boolean gender;
             if (personGenderStr.trim().equals("0")) {
                 gender = Boolean.FALSE;
             } else if (personGenderStr.trim().equals("1")) {
@@ -141,16 +125,16 @@ public class Person implements VertexData, Comparable<Person> {
 
         Person person = (Person) o;
 
-        return id != null ? id.equals(person.id) : person.id == null;
+        return id == person.id;
     }
 
     @Override
     public int hashCode() {
-        return id != null ? id.hashCode() : 0;
+        return id;
     }
 
     @Override
     public int compareTo(Person o) {
-        return this.id.compareTo(o.getId());
+        return Integer.compare(id, o.getId());
     }
 }

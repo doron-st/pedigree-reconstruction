@@ -34,19 +34,17 @@ public abstract class PedLikelihoodCalcAbs {
      * Create IBD feature distribution for every pair of living individuals in pedigree
      * Simulate recombination process N times
      **/
-    Map<String, List<DataPoint>> sampleFeaturesFromInheritanceSpace(Pedigree p, boolean addNoise) {
-
+    Map<String, List<DataPoint>> sampleFeaturesFromInheritanceSpace(Pedigree pedigree, boolean addNoise) {
         Map<String, List<DataPoint>> simDataSets = new HashMap<>();
-
         for (int i = 1; i <= numOfSimIter; i++) {
             MyLogger.debug("Simulate recombinations of pedigree");
-            p.simulateRecombinations();
+            pedigree.simulateRecombinations();
 
             MyLogger.debug("Calc pairwise IBD sharing");
 
             //Save sharing features for each pair of living individuals
-            for (PedVertex v1 : p.getLiving()) {
-                for (PedVertex v2 : p.getLiving()) {
+            for (PedVertex v1 : pedigree.getLiving()) {
+                for (PedVertex v2 : pedigree.getLiving()) {
                     MyLogger.debug("calcIBDSharing " + v1 + "," + v2);
 
                     if (v1.getId() >= v2.getId()) continue;//Do only one side calculation
@@ -54,7 +52,7 @@ public abstract class PedLikelihoodCalcAbs {
                     String pairID = v1.getId() + "." + v2.getId();
 
                     //calculate features for pair
-                    DataPoint simFeatures = IBDFeaturesWeight.calcIBDFeatureWeight(p.getGenotype(v1.getId()), p.getGenotype(v2.getId()), addNoise, phased).asDataPoint();
+                    DataPoint simFeatures = IBDFeaturesWeight.calcIBDFeatureWeight(pedigree.getGenotype(v1.getId()), pedigree.getGenotype(v2.getId()), addNoise, phased).asDataPoint();
 
                     //Initialize datasets
                     if (i == 1) {

@@ -31,7 +31,7 @@ public class TestSibHypothesis {
             MyLogger.info("====================Adding IBD Features edges===============================");
             IBDFeaturesWeight.readEdgesWeights(IBDgraph, IBDFile, population);        // Adding edges to the graph
             MyLogger.important("Graph is " + IBDgraph);
-            ped = new Pedigree(population, false);
+            ped = new Pedigree(population);
 
         } catch (IOException e) {
             throw new RuntimeException("Error...", e);

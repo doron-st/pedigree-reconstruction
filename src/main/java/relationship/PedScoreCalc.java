@@ -29,20 +29,18 @@ public class PedScoreCalc extends PedLikelihoodCalcAbs {
         return -1;
     }
 
-    public void calcLoss(Pedigree p, Graph IBDGraph) {
+    public void calcLoss(Pedigree pedigree, Graph IBDGraph) {
         double totalLoss = 0;
         for (int i = 0; i < numOfIter; i++) {
             int pairNum = 0;
             double loss = 0;
-            Map<String, List<DataPoint>> simDataSets = sampleFeaturesFromInheritanceSpace(p, false);
+            Map<String, List<DataPoint>> simDataSets = sampleFeaturesFromInheritanceSpace(pedigree, false);
 
             //RMSE score for IBD features
-            for (PedVertex v1 : p.getLiving()) {
-                for (PedVertex v2 : p.getLiving()) {
-
+            for (PedVertex v1 : pedigree.getLiving()) {
+                for (PedVertex v2 : pedigree.getLiving()) {
                     if (v1.getId() >= v2.getId()) continue;//Do only one side calculation
-
-                    String pairID = p.getPopulation().getIDString(v1.getId()) + "." + p.getPopulation().getIDString(v2.getId());
+                    String pairID = v1.getId() + "." + v2.getId();
                     Vec simFeatures = simDataSets.get(pairID).get(0).getNumericalValues();
                     Vec obsFeatures = new VecImpl(0, 0);
                     Edge e = IBDGraph.getUndirectedEdge(v1.getId(), v2.getId());
@@ -50,11 +48,9 @@ public class PedScoreCalc extends PedLikelihoodCalcAbs {
                         obsFeatures = e.getWeight().asVector();
 
                     double pairLoss = Math.pow(obsFeatures.get(0) * obsFeatures.get(1) - simFeatures.get(0) * simFeatures.get(1), 2);
-                    if (pairLoss > thresh) {
-                        //MyLogger.important(v1.getId()+","+v2.getId()+" simFeatures " + simFeatures);
-                        //MyLogger.important(v1.getId()+","+v2.getId()+" obsFeatures " + obsFeatures);
-                        //MyLogger.important(v1.getId()+","+v2.getId()+" squared loss " + pairLoss);
-                    }
+                    //MyLogger.important(v1.getId()+","+v2.getId()+" simFeatures " + simFeatures);
+                    //MyLogger.important(v1.getId()+","+v2.getId()+" obsFeatures " + obsFeatures);
+                    //MyLogger.important(v1.getId()+","+v2.getId()+" squared loss " + pairLoss);
                     //Squared difference in total IBD length (obs vs. expected)
                     loss += pairLoss;
                     pairNum++;

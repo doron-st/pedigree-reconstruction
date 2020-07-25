@@ -23,8 +23,8 @@ public class ScorePedigreeMinDistance {
         try {
             List<VertexData> persons = Person.listFromDemograph(demographFilename);
             Population population = new Population(persons);
-            inferredPed = new Pedigree(population, true);
-            realPed = new Pedigree(population, true);
+            inferredPed = new Pedigree(population);
+            realPed = new Pedigree(population);
         } catch (IOException e) {
             throw new RuntimeException("Error...", e);
         }

@@ -10,7 +10,6 @@ import java.util.Set;
 
 public class Population {
     private final Map<Integer, Person> idToPerson = new HashMap<>();
-    private final Map<String, Person> idStrToPerson = new HashMap<>();
 
     public Population(List<VertexData> persons) {
         for (VertexData p : persons) {
@@ -22,13 +21,8 @@ public class Population {
         return idToPerson.get(id).getAge();
     }
 
-    public String getIDString(int id) {
-        return idToPerson.get(id).getIdString();
-    }
-
     public void addPerson(Person p) {
         idToPerson.put(p.getId(), p);
-        idStrToPerson.put(p.getIdString(), p);
     }
 
     public Set<Integer> getIDs() {
@@ -42,9 +36,4 @@ public class Population {
     public Person getPerson(int id) {
         return idToPerson.get(id);
     }
-
-    public Person getPerson(String id) {
-        return idStrToPerson.get(id);
-    }
-
 }

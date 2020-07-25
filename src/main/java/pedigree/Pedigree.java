@@ -15,11 +15,9 @@ public class Pedigree {
     private int largestID;
     private Population population;
 
-    public Pedigree(Population dem, boolean convertToStringID) {
-        this.population = dem;
-        for (Integer id : dem.getIDs()) {
-            if (convertToStringID)
-                id = Integer.valueOf(dem.getPerson(id).getIdString());
+    public Pedigree(Population population) {
+        this.population = population;
+        for (int id : population.getIDs()) {
             addVertex(id, -1, -1, true);
             if (id > largestID)
                 largestID = id;
@@ -327,23 +325,20 @@ public class Pedigree {
         }
 
         Map<Integer, int[]> verMap = new HashMap<>();
-        Map<Integer, Integer> noConversion = new HashMap<>();
         String nextLine;
         try {
             while ((nextLine = fileReader.readLine()) != null) {
                 StringTokenizer nextLineTokenizer = new StringTokenizer(nextLine, "\t");
 
-                int childID = Integer.parseInt(nextLineTokenizer.nextToken());
+                int childId = Integer.parseInt(nextLineTokenizer.nextToken());
                 int fatherID = Integer.parseInt(nextLineTokenizer.nextToken());
                 int motherID = Integer.parseInt(nextLineTokenizer.nextToken());
 
-                if (childID == -1) //ignore -1
-                    continue;
-
                 //Living vertices were added first to the pedigree in construction
                 int isAlive = 0;
-                if (hasVertex(childID) && getVertex(childID).isAlive())
+                if(hasVertex(childId) && getVertex(childId).isAlive()) {
                     isAlive = 1;
+                }
 
                 //Add founders, (if not founder will be overriden)
                 if (!verMap.containsKey(fatherID) && fatherID != -1) {
@@ -355,14 +350,9 @@ public class Pedigree {
                     MyLogger.debug("Added mother to map " + motherID);
 
                 }
-                int[] child = {childID, fatherID, motherID, isAlive};
-                verMap.put(childID, child);
-                MyLogger.debug("Added child to map " + childID + " " + Arrays.toString(child));
-
-                noConversion.put(childID, childID);
-                noConversion.put(fatherID, fatherID);
-                noConversion.put(motherID, motherID);
-
+                int[] child = {childId, fatherID, motherID, isAlive};
+                verMap.put(childId, child);
+                MyLogger.debug("Added child to map " + childId + " " + Arrays.toString(child));
             }
             fileReader.close();
         } catch (IOException e) {
@@ -419,7 +409,7 @@ public class Pedigree {
         PrintWriter printWriter = new PrintWriter(file);
         for (PedVertex v : getVertices()) {
             if (!v.isFounder() && dem.getPerson(v.getId()) != null) {
-                printWriter.println(String.format("%s\t%d\t%d", dem.getPerson(v.getId()).getIdString(), v.getFatherId(), v.getMotherId()));
+                printWriter.println(String.format("%d\t%d\t%d", v.getId(), v.getFatherId(), v.getMotherId()));
                 printWriter.flush();
             }
         }

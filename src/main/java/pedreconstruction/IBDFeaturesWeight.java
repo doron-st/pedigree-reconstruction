@@ -58,23 +58,23 @@ public class IBDFeaturesWeight implements Weight {
             while ((nextLine = fileReader.readLine()) != null) {
                 StringTokenizer nextLineTokenizer = new StringTokenizer(nextLine, "\t");
 
-                String iid1Str = nextLineTokenizer.nextToken();
-                String iid2Str = nextLineTokenizer.nextToken();
-                if (iid1Str.equals(iid2Str)) {
-                    MyLogger.info(iid1Str + ": skipping self IBD match, suggests inbreeding");
+                int id1 = Integer.parseInt(nextLineTokenizer.nextToken());
+                int id2 = Integer.parseInt(nextLineTokenizer.nextToken());
+                if (id1 == id2) {
+                    MyLogger.info(id1 + ": skipping self IBD match, suggests inbreeding");
                     continue;
                 }
                 String segmentNumStr = nextLineTokenizer.nextToken();
                 String meanLengthStr = nextLineTokenizer.nextToken();
 
-                if (population.getPerson(iid1Str) == null || population.getPerson(iid2Str) == null)
+                if (population.getPerson(id1) == null || population.getPerson(id2) == null)
                     continue;
-                Integer iid1 = population.getPerson(iid1Str).getId();
-                Integer iid2 = population.getPerson(iid2Str).getId();
+                Integer iid1 = population.getPerson(id1).getId();
+                Integer iid2 = population.getPerson(id2).getId();
                 //Integer iid1 = Integer.parseInt(iid1Str);
                 //Integer iid2 = Integer.parseInt(iid2Str);
-                Double segmentNum = Double.parseDouble(segmentNumStr);
-                Double meanLength = Double.parseDouble(meanLengthStr);
+                double segmentNum = Double.parseDouble(segmentNumStr);
+                double meanLength = Double.parseDouble(meanLengthStr);
 
                 Vertex v1 = graph.getVertex(iid1);
                 Vertex v2 = graph.getVertex(iid2);
@@ -91,12 +91,6 @@ public class IBDFeaturesWeight implements Weight {
 
     /**
      * Calculate IBD features for a pair of genotypes
-     *
-     * @param g1
-     * @param g2
-     * @param addNoise
-     * @param phased   - Count phased IBD segments.
-     * @return
      */
     public static IBDFeaturesWeight calcIBDFeatureWeight(Genotype g1, Genotype g2, boolean addNoise, boolean phased) {
         List<HapRegion> IBD11 = g1.getHap1().getIBDSegments(g2.getHap1());
@@ -104,7 +98,7 @@ public class IBDFeaturesWeight implements Weight {
         List<HapRegion> IBD21 = g1.getHap2().getIBDSegments(g2.getHap1());
         List<HapRegion> IBD22 = g1.getHap2().getIBDSegments(g2.getHap2());
 
-        List<HapRegion> IBD = new ArrayList<HapRegion>();
+        List<HapRegion> IBD = new ArrayList<>();
         IBD.addAll(IBD11);
         IBD.addAll(IBD12);
         IBD.addAll(IBD21);
@@ -153,8 +147,6 @@ public class IBDFeaturesWeight implements Weight {
 
     /**
      * Connect consecutive IBD segments with different founder origin, into one IBD segment
-     *
-     * @param IBD
      * @return list of extended IBD segments
      */
     private static List<HapRegion> extendIBDSegments(List<HapRegion> IBD) {
@@ -162,7 +154,7 @@ public class IBDFeaturesWeight implements Weight {
         if (IBD.size() < 2) {
             return IBD;
         }
-        List<HapRegion> extended = new ArrayList<HapRegion>();
+        List<HapRegion> extended = new ArrayList<>();
         MyLogger.info("IBD before= " + IBD);
         Collections.sort(IBD);
         MyLogger.info("IBD after= " + IBD);
@@ -194,8 +186,6 @@ public class IBDFeaturesWeight implements Weight {
 
     /**
      * Connect consecutive IBD segments with different founder origin, into one IBD segment
-     *
-     * @param IBD
      * @return list of extended IBD segments
      */
     private static List<HapRegion> extendUnphasedIBDSegments(List<HapRegion> IBD) {
@@ -203,7 +193,7 @@ public class IBDFeaturesWeight implements Weight {
         if (IBD.size() < 2) {
             return IBD;
         }
-        List<HapRegion> extended = new ArrayList<HapRegion>();
+        List<HapRegion> extended = new ArrayList<>();
         //	MyLogger.important("IBD before= " + IBD);
         Collections.sort(IBD);
         //MyLogger.important("IBD after= " + IBD);

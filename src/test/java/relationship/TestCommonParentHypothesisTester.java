@@ -2,16 +2,15 @@ package relationship;
 
 
 import graph.Graph;
-import misc.MyLogger;
 import graph.VertexData;
+import misc.MyLogger;
 import org.junit.Test;
 import pedigree.NucFamily;
+import pedigree.Pedigree;
 import pedigree.Person;
 import pedreconstruction.Contraction;
 import pedreconstruction.IBDFeaturesWeight;
 import pedreconstruction.Population;
-import relationship.CommonParentHypothesisTester;
-import pedigree.Pedigree;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -36,7 +35,7 @@ public class TestCommonParentHypothesisTester {
             MyLogger.info("====================Adding IBD Features edges===============================");
             IBDFeaturesWeight.readEdgesWeights(IBDgraph, IBDFile, population);        // Adding edges to the graph
             MyLogger.important("Graph is " + IBDgraph);
-            ped = new Pedigree(population, false);
+            ped = new Pedigree(population);
 
         } catch (IOException e) {
             throw new RuntimeException("Error...", e);
@@ -55,11 +54,11 @@ public class TestCommonParentHypothesisTester {
         MyLogger.important("Test unrelated");
         testCommonParent(ped, IBDgraph, fullPed, tester, contractedRelationGraph, 714, 774);
         MyLogger.important("Test three sibs");
-        List<Person> sib1 = new ArrayList<Person>();
+        List<Person> sib1 = new ArrayList<>();
         sib1.add((Person) IBDgraph.getVertex(631).getData());
         sib1.add((Person) IBDgraph.getVertex(662).getData());
         sib1.add((Person) IBDgraph.getVertex(688).getData());
-        List<Person> sib2 = new ArrayList<Person>();
+        List<Person> sib2 = new ArrayList<>();
         sib2.add((Person) IBDgraph.getVertex(782).getData());
         testCommonParent(ped, IBDgraph, fullPed, tester, contractedRelationGraph, sib1, sib2);
 
@@ -79,9 +78,9 @@ public class TestCommonParentHypothesisTester {
                                   Pedigree fullPed, CommonParentHypothesisTester tester,
                                   Graph contractedRelationGraph, int s1, int s2) {
 
-        List<Person> sib1 = new ArrayList<Person>();
+        List<Person> sib1 = new ArrayList<>();
         sib1.add((Person) IBDgraph.getVertex(s1).getData());
-        List<Person> sib2 = new ArrayList<Person>();
+        List<Person> sib2 = new ArrayList<>();
         sib2.add((Person) IBDgraph.getVertex(s2).getData());
         testCommonParent(ped, IBDgraph, fullPed, tester, contractedRelationGraph, sib1, sib2);
     }
@@ -90,7 +89,7 @@ public class TestCommonParentHypothesisTester {
                                   Pedigree fullPed, CommonParentHypothesisTester tester,
                                   Graph contractedRelationGraph, List<Person> sib1, List<Person> sib2) {
 
-        List<NucFamily> nucFamilies = new ArrayList<NucFamily>();
+        List<NucFamily> nucFamilies = new ArrayList<>();
         nucFamilies.add(new NucFamily(new Person(1, "1", 50, false, 1), new Person(2, "2", 50, true, 1), sib1));
         nucFamilies.add(new NucFamily(new Person(3, "3", 50, false, 1), new Person(4, "4", 50, true, 1), sib2));
 //		tester.run(ped, contractedRelationGraph, contraction, nucFamilies, 1, fullPed);

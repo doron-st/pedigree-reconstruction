@@ -28,7 +28,7 @@ public class ScorePedigreeIBD {
             Population population = new Population(persons);
             IBDGraph = new Graph(persons);
             IBDFeaturesWeight.readEdgesWeights(IBDGraph, IBDFile, population);        // Adding edges to the graph
-            ped = new Pedigree(population, false);
+            ped = new Pedigree(population);
         } catch (IOException e) {
             throw new RuntimeException("Error...", e);
         }
