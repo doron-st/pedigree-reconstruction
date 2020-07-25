@@ -1,5 +1,6 @@
 package pedreconstruction;
 
+import common.Population;
 import graph.*;
 import jsat.classifiers.DataPoint;
 import jsat.linear.Vec;

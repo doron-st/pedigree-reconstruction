@@ -11,7 +11,7 @@ import pedigree.Pedigree;
 import pedigree.Person;
 import pedreconstruction.Contraction;
 import pedreconstruction.IBDFeaturesWeight;
-import pedreconstruction.Population;
+import common.Population;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ public class TestCommonParentHypothesisTester {
         Pedigree ped;
         Graph ibdGraph;
         try {
-            List<VertexData> persons = Person.listFromDemograph(demographicsFile);
+            List<VertexData> persons = Person.listFromDemographics(demographicsFile);
             Population population = new Population(persons);
             ibdGraph = new Graph(persons);
             MyLogger.info("====================Adding IBD Features edges===============================");

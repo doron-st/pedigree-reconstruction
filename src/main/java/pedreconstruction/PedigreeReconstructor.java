@@ -1,5 +1,6 @@
 package pedreconstruction;
 
+import common.Population;
 import graph.Graph;
 import misc.MyLogger;
 import graph.VertexData;
@@ -63,12 +64,12 @@ public class PedigreeReconstructor {
         return parser.parseArgsOrFail(argv);
     }
 
-    public void reconstruct(){
+    public Pedigree reconstruct(){
         Pedigree ped;
         Graph IBDgraph;
         Population population;
         try {
-            List<VertexData> persons = Person.listFromDemograph(demographicsFilename);
+            List<VertexData> persons = Person.listFromDemographics(demographicsFilename);
             population = new Population(persons);
             IBDgraph = new Graph(persons);
             MyLogger.info("====================Adding IBD Features edges===============================");
@@ -86,8 +87,9 @@ public class PedigreeReconstructor {
 
         for (int gen = generation; gen <= generations; gen++) {
             PedigreeBuilder pedBuilder = new PedigreeBuilder(IBDgraph, outPref + gen, polygamous, synchronous, phasedInput);
-            pedBuilder.buildGeneration(ped, gen, fullPed, population);
+            pedBuilder.buildGeneration(ped, gen, population);
         }
+        return ped;
     }
 
     public static void main(String[] argv) {

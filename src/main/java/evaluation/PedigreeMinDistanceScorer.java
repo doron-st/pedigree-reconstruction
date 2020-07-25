@@ -3,7 +3,7 @@ package evaluation;
 import misc.MyLogger;
 import graph.VertexData;
 import pedigree.Person;
-import pedreconstruction.Population;
+import common.Population;
 import pedigree.Pedigree;
 
 import java.io.IOException;
@@ -20,7 +20,7 @@ public class PedigreeMinDistanceScorer {
         Pedigree realPed;
         Pedigree inferredPed;
         try {
-            List<VertexData> persons = Person.listFromDemograph(demographFilename);
+            List<VertexData> persons = Person.listFromDemographics(demographFilename);
             Population population = new Population(persons);
             inferredPed = new Pedigree(population);
             realPed = new Pedigree(population);

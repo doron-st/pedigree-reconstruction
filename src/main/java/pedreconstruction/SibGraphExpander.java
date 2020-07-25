@@ -13,14 +13,14 @@ public class SibGraphExpander {
 
     private final Graph contractedGraph;
     private final Contraction contraction;
-    private final Map<Vertex, Boolean> vacancyMap = new HashMap<Vertex, Boolean>();
+    private final Map<Vertex, Boolean> vacancyMap = new HashMap<>();
     private final List<Vertex> eList;//list of expended vertices
     private int expendedNum = 0;
 
     public SibGraphExpander(Graph contractedGraph, Contraction cont) {
         this.contractedGraph = contractedGraph;
         contraction = cont;
-        eList = new ArrayList<Vertex>();
+        eList = new ArrayList<>();
         int numOfCont = 0;
         for (Vertex sv : contractedGraph.getVertices()) {
             for (Vertex v : ((SuperVertex) sv.getData()).getInnerVertices()) {
@@ -29,18 +29,18 @@ public class SibGraphExpander {
             if (((SuperVertex) sv.getData()).getInnerVertices().size() > 1)
                 numOfCont++;
         }
-        MyLogger.important("RelationGraphExpender::num of contracted vertices=" + numOfCont);
+        MyLogger.important("RelationGraphExpander::num of contracted vertices=" + numOfCont);
     }
 
     /**
-     * Run Expension algorithm:
-     * Partitions ambigous relationships into father/mother relationships
+     * Run Expansion algorithm:
+     * Partitions ambiguous relationships into father/mother relationships
      * Run on all edges sorted by probability
      *
      * @return - The expended relationships graph
      */
     public Graph run() {
-        List<Edge> allSuperEdges = new ArrayList<Edge>();
+        List<Edge> allSuperEdges = new ArrayList<>();
         //	double t = 0.2;
         List<Vertex> vertices = contractedGraph.getVertices();
         for (int i = 0; i < vertices.size(); i++) {
@@ -61,14 +61,8 @@ public class SibGraphExpander {
             ind[i] = i;
             i++;
         }
-        Arrays.sort(ind, new Comparator<Integer>() {
-            @Override
-            public int compare(final Integer o1, final Integer o2) {
-                return Double.compare(probs[o2], probs[o1]);
-            }
-        });
+        Arrays.sort(ind, (o1, o2) -> Double.compare(probs[o2], probs[o1]));
 
-        i = 0;
         Edge[] sortedSuperEdges = new Edge[allSuperEdges.size()];
         for (i = 0; i < ind.length; i++)
             sortedSuperEdges[i] = allSuperEdges.get(ind[i]);
@@ -79,9 +73,9 @@ public class SibGraphExpander {
             expandOnEdge(se);
 
 
-        MyLogger.important("RelationGraphExpender::expended " + expendedNum + " vertices");
-        //Add all unexpended vertices to list (single children)
-        List<Vertex> uList = new ArrayList<Vertex>();//list of unexpended vertices
+        MyLogger.important("RelationGraphExpander::expended " + expendedNum + " vertices");
+        //Add all unexpanded vertices to list (single children)
+        List<Vertex> uList = new ArrayList<>();//list of unexpanded vertices
         for (Vertex sv : contractedGraph.getVertices()) {
             for (Vertex v : ((SuperVertex) sv.getData()).getInnerVertices())
                 if (!eList.contains(v)) {
@@ -117,17 +111,9 @@ public class SibGraphExpander {
                         for (int mateID : mateIDs) {
                             Vertex mate = contractedGraph.getVertex(contraction.getWrappingSuperVertex(mateID).getId());
                             if (mate.hasEdgeTo(potentSib.getVertexId()) && ((RelationshipProbWeight) mate.getEdgeTo(potentSib.getVertexId()).getWeight()).isMaxProbCategory(FULL_SIB)) {
-                                MyLogger.important("Mate " + mateID + " has sibEdge to " + potentSib.getVertexId() + " altough " + sv + ", has multiple mates, removing edge");
+                                MyLogger.important("Mate " + mateID + " has sibEdge to " + potentSib.getVertexId() + " although " + sv + ", has multiple mates, removing edge");
                                 mate.removeEdgeTo(potentSib);
                                 potentSib.removeEdgeTo(mate);
-
-								/*Edge mateEdge = mate.getEdgeTo(potentSib.getVertexId());
-								double mateProb = ((RelationshipProbWeight)mateEdge.getWeight()).getProb(FULL_SIB);
-								if(mateProb<myProb){
-									MyLogger.important("Mate " + mateID + " has sibEdge to " + potentSib.getVertexId() +" with lower probability then " + sv + ", removing edge");
-									mate.removeEdgeTo(potentSib);
-								}
-								 */
                             }
                         }
                     }
@@ -141,7 +127,7 @@ public class SibGraphExpander {
         SuperVertex sv1 = (SuperVertex) se.getVertex1().getData();
         SuperVertex sv2 = (SuperVertex) se.getVertex2().getData();
 
-        //If both supervertices have one inner vertex
+        //If both super-vertices have one inner vertex
         if (sv1.getInnerVertices().size() == 1 && sv2.getInnerVertices().size() == 1) {
             MyLogger.important("expanding pseudo super-vertices: " + sv1.getId() + "," + sv2.getId());
             assignSuperEdge(se, sv1.getInnerVertices().get(0), sv2.getInnerVertices().get(0));
@@ -200,14 +186,12 @@ public class SibGraphExpander {
         se.getVertex2().removeEdgeTo(se.getVertex1());
         //Add new vertices to eList
         if (!eList.contains(v)) {
-            for (Vertex inner : contraction.getWrappingSuperVertex(v.getVertexId()).getInnerVertices())
-                eList.add(inner);
+            eList.addAll(contraction.getWrappingSuperVertex(v.getVertexId()).getInnerVertices());
             expendedNum++;
         }
 
         if (!eList.contains(u)) {
-            for (Vertex inner : contraction.getWrappingSuperVertex(u.getVertexId()).getInnerVertices())
-                eList.add(inner);
+            eList.addAll(contraction.getWrappingSuperVertex(u.getVertexId()).getInnerVertices());
             expendedNum++;
         }
     }

@@ -9,7 +9,7 @@ import net.sourceforge.argparse4j.inf.Namespace;
 import pedigree.Pedigree;
 import pedigree.Person;
 import pedreconstruction.IBDFeaturesWeight;
-import pedreconstruction.Population;
+import common.Population;
 import relationship.PedScoreCalc;
 
 import java.io.IOException;
@@ -47,7 +47,7 @@ public class PedigreeIBDFitScoreCalculator {
         Pedigree inferredPed;
         Graph ibdGraph;
         try {
-            List<VertexData> persons = Person.listFromDemograph(demographicsFile);
+            List<VertexData> persons = Person.listFromDemographics(demographicsFile);
             Population population = new Population(persons);
             ibdGraph = new Graph(persons);
             IBDFeaturesWeight.readEdgesWeights(ibdGraph, ibdFile, population);        // Adding edges to the graph

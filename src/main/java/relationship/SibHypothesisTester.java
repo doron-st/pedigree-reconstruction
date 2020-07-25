@@ -32,7 +32,7 @@ public class SibHypothesisTester extends RelationHypothesisTester {
      * {fullsib,halfsib,parentChild,childParent,other}
      * Add edge between nodes with fullsib as the maximum likelihood relationship
      */
-    public void run(Pedigree ped, Graph contractedRelationGraph, List<Vertex> candidates, int gen, Pedigree fullPed) {
+    public void run(Pedigree ped, Graph contractedRelationGraph, List<Vertex> candidates, int gen) {
 
         lCalc = new PedLikelihoodCalcInheritancePaths(50, phased);
         //lCalc = new PedLikelihoodCalcBasic(50);

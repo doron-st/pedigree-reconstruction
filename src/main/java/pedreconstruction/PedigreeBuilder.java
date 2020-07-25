@@ -1,5 +1,6 @@
 package pedreconstruction;
 
+import common.Population;
 import graph.Graph;
 import graph.SuperVertex;
 import graph.Vertex;
@@ -40,7 +41,7 @@ public class PedigreeBuilder {
     /**
      * Main method - using actual pedigree for IBD sharing estimation
      */
-    public void buildGeneration(Pedigree ped, int gen, Pedigree fullPed, Population dem) {
+    public void buildGeneration(Pedigree ped, int gen, Population dem) {
 
         this.generation = gen;
         Graph IBDGraph = graph;
@@ -57,7 +58,7 @@ public class PedigreeBuilder {
         Graph contractedRelationGraph;
         contractedRelationGraph = contraction.createEdgelessContractedGraph();
 
-        sibHypTester.run(ped, contractedRelationGraph, contractedRelationGraph.getVertices(), gen, fullPed);
+        sibHypTester.run(ped, contractedRelationGraph, contractedRelationGraph.getVertices(), gen);
         SibGraphExpander sge = new SibGraphExpander(contractedRelationGraph, contraction);
 
         if (polygamous) {
@@ -75,7 +76,7 @@ public class PedigreeBuilder {
         //Search for maximal weight independent set of sib cliques
         MyLogger.important("======================Partition Full-Sibs(" + gen + ")=====================");
         SiblingGrouper sibGrouper = new SiblingGrouper(sibExpendedGraph);
-        sibGrouper.detectSiblings(gen, ped);
+        sibGrouper.detectSiblings(ped);
 
         // Retrieve group of siblings
         NuclearFamilyCreator nuclearFamilyCreator = new NuclearFamilyCreator(sibExpendedGraph, gen, nextIDGen);
@@ -96,7 +97,7 @@ public class PedigreeBuilder {
 
             MyLogger.important("======================Partition Half-Sibs(" + gen + ")=====================");
             sibGrouper = new SiblingGrouper(expendedHalfSibGraph);
-            sibGrouper.uniteCommonParentOfHalfSibs(nucFamilies, gen);
+            sibGrouper.uniteCommonParentOfHalfSibs(nucFamilies);
         }
         MyLogger.important("======================Update pedigree(" + gen + ")=====================");
         updatePedigreeObj(ped, nucFamilies);

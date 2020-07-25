@@ -26,9 +26,9 @@ public class SiblingGrouper {
     /**
      * Sibling detection - Clique method
      */
-    public void detectSiblings(int newGeneration, Pedigree pedigree) {
+    public void detectSiblings(Pedigree pedigree) {
 
-        List<Vertex> existingVertices = new ArrayList<Vertex>(graph.getVertexMap().values());
+        List<Vertex> existingVertices = new ArrayList<>(graph.getVertexMap().values());
         SimpleGraph sibGraph = new SimpleGraph();
         ped = pedigree;
 
@@ -55,20 +55,16 @@ public class SiblingGrouper {
 
         //Compute connected components
         Map<SimpleVertex, SimpleGraph> CC = GraphAlgorithms.SCC(sibGraph);
-        List<SimpleGraph> list = new ArrayList<SimpleGraph>();
 
-        for (SimpleGraph g : CC.values()) {
-            list.add(g);
-        }
+        List<SimpleGraph> list = new ArrayList<>(CC.values());
         //Identify each CC in the Sibs-graph as siblings, (include thining for large CC's)
-
         //connectedComponentAsSibs(sibGraph, list);
         maxCliqueAsSibs(sibGraph, list);
         //maxISofCliquesAsSibs(sibGraph, list);
         MyLogger.important("Found " + totalSibs + " sibs");
     }
 
-    public void uniteCommonParentOfHalfSibs(List<NucFamily> families, int generation) {
+    public void uniteCommonParentOfHalfSibs(List<NucFamily> families) {
         //Create graph of nuclear families with common parent edges
         SimpleGraph nucGraph = new SimpleGraph();
         for (int i = 0; i < families.size(); i++) {
@@ -93,12 +89,8 @@ public class SiblingGrouper {
                         || (fam2.getFather().isAlive() && fam2.getMother().isAlive())) {
                     continue;
                 }
-                Iterator<Vertex> iter1 = graph.verticesFromDatas(fam1.siblings).iterator();
-                while (iter1.hasNext()) {
-                    Vertex sib1 = iter1.next();
-                    Iterator<Vertex> iter2 = graph.verticesFromDatas(fam2.siblings).iterator();
-                    while (iter2.hasNext()) {
-                        Vertex sib2 = iter2.next();
+                for (Vertex sib1 : graph.verticesFromDatas(fam1.siblings)) {
+                    for (Vertex sib2 : graph.verticesFromDatas(fam2.siblings)) {
                         numPairs++;
                         if (sib1.hasEdgeTo(sib2.getVertexId())) {
                             Edge e = sib1.getEdgeTo(sib2.getVertexId());
@@ -124,10 +116,8 @@ public class SiblingGrouper {
 
         MyLogger.info(nucGraph.toString());
         //Compute connected components
-        List<SimpleGraph> CC = new ArrayList<SimpleGraph>();
 
-        for (SimpleGraph g : GraphAlgorithms.SCC(nucGraph).values())
-            CC.add(g);
+        List<SimpleGraph> CC = new ArrayList<>(GraphAlgorithms.SCC(nucGraph).values());
 
         /*
          * Find half-sib cliques in each CC
@@ -146,24 +136,24 @@ public class SiblingGrouper {
 
             for (SimpleVertex vertex : g.getVertices()) {
                 String[] nameSplit = vertex.name.split(":");
-                int famIdx = Integer.valueOf(nameSplit[0]);
+                int famIdx = Integer.parseInt(nameSplit[0]);
                 NucFamily fam = families.get(famIdx);
                 MyLogger.important(fam.toString());
             }
 
             MyLogger.important(g.toString());
-            List<SimpleGraph> cliques = new ArrayList<SimpleGraph>();
+            List<SimpleGraph> cliques = new ArrayList<>();
             // Add other sizes of cliques (from largest to smallest)
             cliques.addAll(GraphAlgorithms.findCliques(g, 4));
             cliques.addAll(GraphAlgorithms.findCliques(g, 3));
             cliques.addAll(GraphAlgorithms.findCliques(g, 2));
 
-            List<List<NucFamily>> allCliquesForJoining = new ArrayList<List<NucFamily>>();
+            List<List<NucFamily>> allCliquesForJoining = new ArrayList<>();
 
             //Join the largest clique containing each vertex
             for (SimpleGraph clique : cliques) {
                 List<SimpleVertex> nodes = clique.getVertices();
-                List<NucFamily> toBeJoined = new ArrayList<NucFamily>();
+                List<NucFamily> toBeJoined = new ArrayList<>();
                 boolean alreadyJoined = false;
 
                 //Check if nucFamilies were joined by the edge weights
@@ -184,7 +174,7 @@ public class SiblingGrouper {
                 if (!alreadyJoined) {
                     for (SimpleVertex node1 : nodes) {
                         String[] nameSplit = node1.name.split(":");
-                        int nucIdx = Integer.valueOf(nameSplit[0]);
+                        int nucIdx = Integer.parseInt(nameSplit[0]);
                         toBeJoined.add(families.get(nucIdx));
                     }
                     allCliquesForJoining.add(toBeJoined);
@@ -236,7 +226,7 @@ public class SiblingGrouper {
 */
 
     /**
-     * @param maxSize
+     * @param maxSize max CC size
      * @param g             - Connected component graph
      * @param list          - list of connected components in sib-Graph
      * @return true if CC was to large, in this case need to skip addition of sibs,
@@ -305,7 +295,7 @@ public class SiblingGrouper {
                 continue;
 
             //find max clique
-            List<SimpleGraph> cliques = new ArrayList<SimpleGraph>();
+            List<SimpleGraph> cliques = new ArrayList<>();
             // Add different sizes of cliques
             for (int size = maxCliqueSize; size >= 2; size--) {
                 cliques.addAll(GraphAlgorithms.findCliques(g, size));
@@ -332,8 +322,8 @@ public class SiblingGrouper {
                     //remove mate parallel edges
                     for (SimpleVertex v : maxClique.getVertices()) {
                         for (SimpleVertex u : maxClique.getVertices()) {
-                            List<Integer> vMates = ped.getMates(Integer.valueOf(v.name));
-                            List<Integer> uMates = ped.getMates(Integer.valueOf(u.name));
+                            List<Integer> vMates = ped.getMates(Integer.parseInt(v.name));
+                            List<Integer> uMates = ped.getMates(Integer.parseInt(u.name));
                             for (Integer vMateID : vMates)
                                 for (Integer uMateID : uMates) {
                                     SimpleVertex vMate = g.getVertex(vMateID.toString());
@@ -347,95 +337,12 @@ public class SiblingGrouper {
                                 }
                         }
                     }
-                    cliques = new ArrayList<SimpleGraph>();
+                    cliques = new ArrayList<>();
                     size++;//try finding other cliques with teh same size
                 }
             }
         }
     }
-
-    /**
-     * Sibling detection - Clique method
-     */
-	/*
-	private void maxISofCliquesAsSibs(SimpleGraph sibGraph,	List<SimpleGraph> list) {
-		 // Find sib cliques in each CC
-	
-		for(int i=0;i<list.size();i++){
-			SimpleGraph g = list.get(i);
-			MyLogger.important("ConnectedComponent " + i);MyLogger.important(g.getVertices().toString());
-			MyLogger.important(g.toString());
-
-			int ccSize = g.getVertices().size();
-			if(ccSize==1)
-				continue;
-
-			if(thinLargeCC(7, g, list))
-				continue;
-
-			// Find all cliques in CC
-			List<SimpleGraph> cliques = new ArrayList<SimpleGraph>();
-			// Add different sizes of cliques
-			for(int size=10;size>=2;size--)
-				cliques.addAll(GraphAlgorithms.findCliques(g,size));
-
-			// build clique graph for CC:
-			// 1.Each node is a clique
-			// 2.Every pair of disjoint cliques have an edge
-			// 3.The weight of each node is the Sum(clique edges weight)
-			// 
-			SimpleGraph cliqueGraph = new SimpleGraph();
-			for(SimpleGraph clique : cliques){
-				cliqueGraph.createSimpleVertex(clique.getVertices().toString(),sibGraph.calcSumOfEdgesWeight(clique.getVertices()));
-				//	System.out.println("Adding to CliqueGraph vertex with weight " + sibGraph.calcSumOfEdgesWeight(clique.getVertices()));
-			}
-			MyLogger.important("Sibling CliqueGraph has " + cliqueGraph.getVertices().size() + " vertices");
-			for(SimpleGraph clique : cliques){
-				for(SimpleGraph otherClique : cliques){
-					if(!SimpleGraph.graphsShareCommonVertex(clique,otherClique)){
-						cliqueGraph.addEdge(cliqueGraph.getVertex(clique.getVertices().toString()),cliqueGraph.getVertex(otherClique.getVertices().toString()));
-						//System.out.println("Added vertex from " + clique.getVertices().toString() + " to " + otherClique.getVertices().toString());
-					}
-				}
-			}
-
-			//Calc all independent sets of cliqueGraph
-			List<SimpleGraph> independentCliques = new ArrayList<SimpleGraph>();
-			int j=1;
-			while(j<10){
-				int ICSize=independentCliques.size();
-
-				independentCliques.addAll(GraphAlgorithms.findCliques(cliqueGraph,j));
-				//System.out.println("IS_size=" + j + " total_#_IS=" + independentCliques.size());
-				if(ICSize==independentCliques.size())
-					break;
-				j++;
-			}
-
-			//Find the maximal weight Independent-Set
-			double maxICWeight = 0;
-			SimpleGraph bestIC = null;
-			for (SimpleGraph IC : independentCliques){
-				double ICWeight = cliqueGraph.calcSumOfVertexWeight(IC.getVertices());
-				//System.out.println(IC.getVertices() + " " + cliqueGraph.calcSumOfVertexWeight(IC.getVertices()));
-				if(ICWeight > maxICWeight){
-					maxICWeight=ICWeight;
-					bestIC = IC;
-				}
-			}
-
-			// Update graph with sibs info	 
-			if(bestIC != null){
-				MyLogger.important("best IC: " + bestIC.toString());
-				if(bestIC.getVertices().size() >1)
-					MyLogger.important("found " + bestIC.getVertices().size() + " cliques");
-				updateSibsInGraph(graph,bestIC);
-			}
-		}
-		MyLogger.important("Found " + totalSibs + " sibs");
-	}
-
-*/
 
     /**
      * update the Family.siblings field for a specific Connected component
@@ -503,49 +410,6 @@ public class SiblingGrouper {
         MyLogger.important("Added " + numOfSibsAdded + " Sibling pairs");
     }
 
-    private void uniteAllCommonParentsArbitraryOrder(List<List<NucFamily>> familyCliques) {
-        if (familyCliques.size() == 0)
-            return;
-
-        MyLogger.debug("uniteAllCommonParents");
-        MyLogger.important("num of cliques = " + familyCliques.size());
-
-        //Resolve gender if one parent is alive
-        MyLogger.important("join nuclear families with one living parent");
-
-        List<Integer> toRemove = new ArrayList<Integer>();
-        int index = 0;
-        for (List<NucFamily> clique : familyCliques) {
-            boolean fatherAlive = false;
-            boolean motherAlive = false;
-
-            for (NucFamily fam : clique) {
-                if (fam.getFather().isAlive()) {
-                    fatherAlive = true;
-                    MyLogger.debug("father is alive: " + fam);
-                }
-                if (fam.getMother().isAlive()) {
-                    motherAlive = true;
-                    MyLogger.debug("mother is alive: " + fam);
-                }
-            }
-            if (motherAlive && fatherAlive) {
-                MyLogger.error("uniteAllCommonParents::Both parents are alive");
-                return;
-            } else if (motherAlive) {
-                uniteFather(clique);
-                toRemove.add(index);
-            } else if (fatherAlive) {
-                uniteMother(clique);
-                toRemove.add(index);
-            } else {
-                uniteMother(clique);
-                toRemove.add(index);
-            }
-            index++;
-        }
-    }
-
     private void uniteAllCommonParents(List<List<NucFamily>> familyCliques) {
         if (familyCliques.size() == 0)
             return;
@@ -556,7 +420,7 @@ public class SiblingGrouper {
         //Resolve gender if one parent is alive
         MyLogger.important("join nuclear families with one living parent");
 
-        List<Integer> toRemove = new ArrayList<Integer>();
+        List<Integer> toRemove = new ArrayList<>();
         int index = 0;
         for (List<NucFamily> clique : familyCliques) {
             boolean fatherAlive = false;
@@ -597,7 +461,7 @@ public class SiblingGrouper {
         }
 
         while (familyCliques.size() > 0) {
-            startGenderResolutionSeed(familyCliques, toRemove, index);
+            startGenderResolutionSeed(familyCliques);
             moreResolvableFamilies = true;
             while (moreResolvableFamilies) {
                 moreResolvableFamilies = resolveAlreadyJoined(familyCliques);
@@ -606,11 +470,9 @@ public class SiblingGrouper {
     }
 
 
-    private void startGenderResolutionSeed(List<List<NucFamily>> familyCliques,
-                                           List<Integer> toRemove, int index) {
-
-        index = 0;
-        toRemove = new ArrayList<Integer>();
+    private void startGenderResolutionSeed(List<List<NucFamily>> familyCliques) {
+        int index = 0;
+        List<Integer> toRemove = new ArrayList<>();
         //Just guess gender
         MyLogger.important("start gender resolution seed - guess father");
         for (List<NucFamily> clique : familyCliques) {
@@ -641,8 +503,8 @@ public class SiblingGrouper {
 
             if (motherJoined || fatherJoined) {
                 index++;
-                continue;
-            } else {
+            }
+            else {
                 uniteFather(clique);
                 toRemove.add(index);
                 break;
@@ -660,7 +522,7 @@ public class SiblingGrouper {
 
 
     private boolean resolveAlreadyJoined(List<List<NucFamily>> familyCliques) {
-        List<Integer> toRemove = new ArrayList<Integer>();
+        List<Integer> toRemove = new ArrayList<>();
         int index = 0;
         boolean resolved = false;
         MyLogger.important("resolveAlready joined: Num of cliques = " + familyCliques.size());

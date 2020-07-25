@@ -1,7 +1,7 @@
 package pedigree;
 
-import misc.MyLogger;
 import graph.VertexData;
+import misc.MyLogger;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -61,12 +61,9 @@ public class Person implements VertexData, Comparable<Person> {
 
     @Override
     public String toString() {
-        //return id.toString();
         return "{" +
                 "id=" + id
                 + ",age=" + age +
-                //",gender=" + (gender ? "F" : "M") +
-                //",isAlive=" + isAlive +
                 ",Gen=" + discoveryGeneration
                 + '}';
     }
@@ -78,7 +75,7 @@ public class Person implements VertexData, Comparable<Person> {
      * @return list of person data
      * @throws IOException - in case of a problem reading the file
      */
-    public static List<VertexData> listFromDemograph(String demographicsFilename) throws IOException {
+    public static List<VertexData> listFromDemographics(String demographicsFilename) throws IOException {
         MyLogger.important("Creating person list from " + demographicsFilename);
         List<VertexData> persons = new ArrayList<>();
 

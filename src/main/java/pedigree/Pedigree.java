@@ -1,7 +1,7 @@
 package pedigree;
 
 import misc.MyLogger;
-import pedreconstruction.Population;
+import common.Population;
 import common.Genotype;
 import common.Haplotype;
 

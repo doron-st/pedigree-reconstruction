@@ -1,8 +1,8 @@
 package pedreconstruction;
 
 import com.google.common.io.Resources;
+import common.Population;
 import graph.Graph;
-import graph.Weight;
 import misc.MyLogger;
 import graph.Vertex;
 import graph.VertexData;
@@ -31,7 +31,7 @@ public class TestSibHypothesis {
         Pedigree ped;
         Graph ibdGraph;
         try {
-            List<VertexData> persons = Person.listFromDemograph(demographicsFile);
+            List<VertexData> persons = Person.listFromDemographics(demographicsFile);
             Population population = new Population(persons);
             ibdGraph = new Graph(persons);
             MyLogger.info("====================Adding IBD Features edges===============================");
@@ -54,20 +54,20 @@ public class TestSibHypothesis {
         // this is left for follow-up research and work.
         // method currently works on a single generation so this is not a problem
         MyLogger.important("Test sibs");
-        testSib(ped, fullPed, tester, contractedRelationGraph, 414, 464, 0.065);
-        testSib(ped, fullPed, tester, contractedRelationGraph, 464, 414, 0.065);
+        testSib(ped, tester, contractedRelationGraph, 414, 464, 0.065);
+        testSib(ped, tester, contractedRelationGraph, 464, 414, 0.065);
 
         MyLogger.important("Test unrelated");
-        testSib(ped, fullPed, tester, contractedRelationGraph, 414, 415, 0);
+        testSib(ped, tester, contractedRelationGraph, 414, 415, 0);
     }
 
-    private void testSib(Pedigree ped, Pedigree fullPed, SibHypothesisTester tester,
+    private void testSib(Pedigree ped, SibHypothesisTester tester,
                          Graph contractedRelationGraph, int s1, int s2, double expectedProbability) {
 
         List<Vertex> sibs = new ArrayList<>();
         sibs.add(contractedRelationGraph.getVertex(s1));
         sibs.add(contractedRelationGraph.getVertex(s2));
-        tester.run(ped, contractedRelationGraph, sibs, 1, fullPed);
+        tester.run(ped, contractedRelationGraph, sibs, 1);
 
         RelationshipProbWeight weight = contractedRelationGraph.getWeight(sibs.get(0), sibs.get(1));
         if(weight == null && expectedProbability == 0)
