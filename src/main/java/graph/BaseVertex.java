@@ -13,7 +13,7 @@ public class BaseVertex implements Vertex {
     private static final long serialVersionUID = 1659765997375354120L;
 
     private VertexData data;
-    private Map<Integer, Edge> edgeMap = new HashMap<Integer, Edge>();
+    private Map<Integer, Edge> edgeMap = new HashMap<>();
 
     public BaseVertex(VertexData data) {
         this.data = data;
@@ -78,12 +78,4 @@ public class BaseVertex implements Vertex {
         MyLogger.debug("num of edges from " + this.getVertexId() + " after = " + edgeMap.size());
     }
 
-    public void setData(VertexData data) {
-        this.data = data;
-
-    }
-
-    public void clearEdges() {
-        this.edgeMap = new HashMap<Integer, Edge>();
-    }
 }

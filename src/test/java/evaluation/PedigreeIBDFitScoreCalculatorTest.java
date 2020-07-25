@@ -20,7 +20,7 @@ public class PedigreeIBDFitScoreCalculatorTest {
         for(String file : new String[]{inferredPedigreeFile1, inferredPedigreeFile2, inferredPedigreeFile3}) {
             PedigreeIBDFitScoreCalculator pedigreeIBDFitScoreCalculator = new PedigreeIBDFitScoreCalculator(file, demographicsFile, ibdFile, 0);
             double score = pedigreeIBDFitScoreCalculator.evaluate();
-            assertEquals(score, expectedScores[i], 0.1);
+            assertEquals(score, expectedScores[i], 0.2);
             i++;
         }
 

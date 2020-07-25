@@ -16,7 +16,7 @@ public class SuperVertex implements VertexData {
      * @param v - first inner vertex
      */
     public SuperVertex(Vertex v) {
-        vertices = new ArrayList<Vertex>();
+        vertices = new ArrayList<>();
         vertices.add(new BaseVertex(v.getData()));
         id = v.getVertexId();
     }

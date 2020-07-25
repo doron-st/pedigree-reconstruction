@@ -30,8 +30,4 @@ public interface Vertex extends Serializable {
 
     void removeEdgeTo(Vertex v);
 
-    void setData(VertexData data);
-
-    void clearEdges();
-
 }

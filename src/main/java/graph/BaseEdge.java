@@ -35,12 +35,4 @@ public class BaseEdge implements Edge {
         this.weight = weight;
     }
 
-    public boolean isWeightHandled() {
-        return weightHandled;
-    }
-
-    public void setWeightHandled(boolean state) {
-        weightHandled = state;
-    }
-
 }

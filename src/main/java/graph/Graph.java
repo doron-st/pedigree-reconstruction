@@ -14,7 +14,7 @@ import java.util.*;
  */
 public class Graph implements Serializable {
     private static final long serialVersionUID = -2913752016824176357L;
-    private final Map<Integer, Vertex> vertexMap = new HashMap<Integer, Vertex>();
+    private final Map<Integer, Vertex> vertexMap = new HashMap<>();
 
     public Graph(List<VertexData> verticesData) {
         for (VertexData d : verticesData) {
@@ -26,8 +26,6 @@ public class Graph implements Serializable {
 
     /**
      * Assemble a graph from vertices, use existing vertices, no cloning
-     *
-     * @param vertices
      */
     public Graph(Collection<Vertex> vertices) {
         for (Vertex v : vertices) {
@@ -59,15 +57,6 @@ public class Graph implements Serializable {
 //        v2.addEdge(edge);
     }
 
-    public Edge getEdge(Integer vid1, Integer vid2) {
-        Vertex v1 = vertexMap.get(vid1);
-        Vertex v2 = vertexMap.get(vid2);
-        if (v1 == null || v2 == null) {
-            return null;
-        }
-        return getEdge(v1, v2);
-    }
-
     public Edge getUndirectedEdge(Integer vid1, Integer vid2) {
         Vertex v1 = vertexMap.get(vid1);
         Vertex v2 = vertexMap.get(vid2);
@@ -93,7 +82,7 @@ public class Graph implements Serializable {
 
 
     public List<Vertex> verticesFromDatas(List<? extends VertexData> vertexDatas) {
-        List<Vertex> vertexes = new ArrayList<Vertex>();
+        List<Vertex> vertexes = new ArrayList<>();
         for (VertexData vertexData : vertexDatas) {
 
             Vertex vertex = getVertex(vertexData.getId());
@@ -106,24 +95,11 @@ public class Graph implements Serializable {
     }
 
     public List<? extends VertexData> vertexDataFromVertices(List<Vertex> vertices) {
-        List<VertexData> vertexDatas = new ArrayList<VertexData>();
+        List<VertexData> vertexDatas = new ArrayList<>();
         for (Vertex vertex : vertices) {
             vertexDatas.add(vertex.getData());
         }
         return vertexDatas;
-    }
-
-    public void removeVertex(Vertex v) {
-        List<Vertex> existingVertices = new ArrayList<Vertex>(getVertexMap().values());
-        for (Vertex u : existingVertices) {
-            Edge e;
-            if ((e = getEdge(u, v)) != null)
-                u.getEdgeMap().values().remove(e);
-            if ((e = getEdge(v, u)) != null)
-                v.getEdgeMap().values().remove(e);
-
-        }
-        vertexMap.remove(v.getVertexId());
     }
 
     public Map<Integer, Vertex> getVertexMap() {
@@ -182,39 +158,10 @@ public class Graph implements Serializable {
 
     public List<Vertex> getVertices() {
         Iterator<Vertex> iter = vertexMap.values().iterator();
-        List<Vertex> vertices = new ArrayList<Vertex>();
+        List<Vertex> vertices = new ArrayList<>();
         while (iter.hasNext())
             vertices.add(iter.next());
         return vertices;
     }
 
-    public boolean hasVertex(int id) {
-        return vertexMap.keySet().contains(id);
-    }
-
-    public int getNumOfEdges() {
-        int numOfEdges = 0;
-        for (Vertex v : getVertices()) {
-            numOfEdges += v.getEdgeMap().size();
-        }
-        return numOfEdges;
-    }
-
-    public List<VertexData> getVertexDataList() {
-        List<VertexData> l = new ArrayList<VertexData>();
-        for (Vertex v : getVertices()) {
-            l.add(v.getData());
-        }
-        return l;
-    }
-
-    public void clearAllEdges() {
-        for (Vertex v : getVertices()) {
-            v.clearEdges();
-        }
-    }
-
-    public void setVertexID(Vertex v, Integer id) {
-        vertexMap.put(id, v);
-    }
 }

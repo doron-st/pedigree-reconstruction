@@ -10,9 +10,9 @@ import java.util.*;
  * invariant: all SimpleEdges are directed || all SimpleEdges are undirected
  */
 public class SimpleGraph {
-    private final Map<SimpleVertex, List<SimpleVertex>> adj = new HashMap<SimpleVertex, List<SimpleVertex>>();
-    private final Map<String, SimpleVertex> nameMap = new HashMap<String, SimpleVertex>();
-    private final Map<String, SimpleEdge> edges = new HashMap<String, SimpleEdge>();
+    private final Map<SimpleVertex, List<SimpleVertex>> adj = new HashMap<>();
+    private final Map<String, SimpleVertex> nameMap = new HashMap<>();
+    private final Map<String, SimpleEdge> edges = new HashMap<>();
 
     /**
      * adds a new SimpleVertex to the graph
@@ -22,7 +22,7 @@ public class SimpleGraph {
     public void addVertex(SimpleVertex v) {
         if (!nameMap.containsKey(v.name)) {
             nameMap.put(v.name, v);
-            adj.put(v, new LinkedList<SimpleVertex>());
+            adj.put(v, new LinkedList<>());
         }
     }
 
@@ -105,7 +105,7 @@ public class SimpleGraph {
     public void createSimpleVertex(String name, double weight) {
         SimpleVertex v = new SimpleVertex(name);
         nameMap.put(name, v);
-        adj.put(v, new LinkedList<SimpleVertex>());
+        adj.put(v, new LinkedList<>());
         v.weight = weight;
     }
 
@@ -134,14 +134,8 @@ public class SimpleGraph {
     }
 
     public List<SimpleVertex> getVertices() {
-        List<SimpleVertex> l = new ArrayList<SimpleVertex>();
-        l.addAll(adj.keySet());
-        Collections.sort(l, new Comparator<SimpleVertex>() {
-
-            public int compare(SimpleVertex arg0, SimpleVertex arg1) {
-                return arg0.name.compareTo(arg1.name);
-            }
-        });
+        List<SimpleVertex> l = new ArrayList<>(adj.keySet());
+        l.sort(Comparator.comparing(arg0 -> arg0.name));
         return l;
     }
 
@@ -224,7 +218,8 @@ public class SimpleGraph {
      * precondition: ,fields must be initialized in the algorithm
      */
     public class SimpleVertex {
-        public int key, d, f;
+        public int d;
+        public int f;
         public SimpleVertex parent, root;
         public String name;
         public Color color;

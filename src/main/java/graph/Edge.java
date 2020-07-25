@@ -17,8 +17,4 @@ public interface Edge extends Serializable {
 
     void setWeight(Weight w);
 
-    boolean isWeightHandled();
-
-    void setWeightHandled(boolean b);
-
 }
