@@ -14,14 +14,14 @@ import prepare.common.Population;
 import java.io.IOException;
 import java.util.List;
 
-public class PedigreeIBDFitScoreCalculator {
+public class PedigreeIBDLossCalculator {
 
     private final String inferredPedigreeFile;
     private final String demographicsFile;
     private final String ibdFile;
     private final int debugThresh;
 
-    public PedigreeIBDFitScoreCalculator(String inferredPedigreeFile, String demographicsFile, String ibdFile, int debugThresh) {
+    public PedigreeIBDLossCalculator(String inferredPedigreeFile, String demographicsFile, String ibdFile, int debugThresh) {
         this.inferredPedigreeFile = inferredPedigreeFile;
         this.demographicsFile = demographicsFile;
         this.ibdFile = ibdFile;
@@ -29,7 +29,7 @@ public class PedigreeIBDFitScoreCalculator {
     }
 
     private static Namespace parseArgs(String[] argv) {
-        ArgumentParser parser = ArgumentParsers.newArgumentParser(PedigreeIBDFitScoreCalculator.class.getSimpleName())
+        ArgumentParser parser = ArgumentParsers.newArgumentParser(PedigreeIBDLossCalculator.class.getSimpleName())
                 .defaultHelp(true)
                 .description("Evaluate reconstructed pedigree fit to IBD input data");
 
@@ -72,7 +72,7 @@ public class PedigreeIBDFitScoreCalculator {
         String ibdFile = args.getString("ibdFile");
         int debugThresh = args.getInt("debugThreshold");
 
-        PedigreeIBDFitScoreCalculator pedigreeIBDFitScoreCalculator = new PedigreeIBDFitScoreCalculator(inferredPedigreeFile, demographicsFile, ibdFile, debugThresh);
-        pedigreeIBDFitScoreCalculator.evaluate();
+        PedigreeIBDLossCalculator pedigreeIBDLossCalculator = new PedigreeIBDLossCalculator(inferredPedigreeFile, demographicsFile, ibdFile, debugThresh);
+        pedigreeIBDLossCalculator.evaluate();
     }
 }

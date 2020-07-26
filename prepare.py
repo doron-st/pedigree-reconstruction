@@ -29,7 +29,7 @@ def main():
     elif program == 'simulate_pedigree':
         command = generate_command('prepare.simulator.WrightFisherSimulator', specific_arg_arr)
     elif program == 'calculate_ibd_loss':
-        command = generate_command('prepare.evaluation.PedigreeIBDFitScoreCalculator', specific_arg_arr)
+        command = generate_command('prepare.evaluation.PedigreeIBDLossCalculator', specific_arg_arr)
     elif program == 'compare_pedigrees':
         command = generate_command('prepare.evaluation.PedigreeMinDistanceScorer', specific_arg_arr)
 

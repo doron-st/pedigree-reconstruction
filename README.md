@@ -16,8 +16,20 @@ For the list of available tools:
 python prepare.py
 ~~~
 
+## Test
+~~~
+mvn test
+~~~
+
 ## Build
+~~~
 mvn install
+~~~
+
+## Possible test flow
+1. simulate pedigree data with simulate_pedigree
+2. reconstruct from IBD only with pedigree_reconstruction
+3. evaluate result useing calculate_ibd_loss and compare_pedigrees
 
 ## Reference
 Historical Pedigree Reconstruction from Extant Populations Using PArtitioning of RElatives PREPARE: 
