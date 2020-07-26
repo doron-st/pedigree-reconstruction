@@ -90,7 +90,7 @@ public class CommonParentHypothesisTester extends RelationHypothesisTester {
 
                 idConversion = enumTable;
 
-                //Remove extra vertices from prepare.pedigree
+                //Remove extra vertices from pedigree
                 added1.addAll(added2);
                 for (int addedID : added1) {
                     ped.removeVertex(addedID);

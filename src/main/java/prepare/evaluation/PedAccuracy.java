@@ -28,7 +28,7 @@ public class PedAccuracy {
                     if (inferredDistance == realDistance) {//same minimal distance
                         score++;
                     }
-                } else if (inferredDistance < Integer.MAX_VALUE)//unrelated by real prepare.pedigree, and we say related
+                } else if (inferredDistance < Integer.MAX_VALUE)//unrelated by real pedigree, and we say related
                     //Take seriously only if both pedigrees are the same level
                     fp++;
                 else //both are unrelated

@@ -31,13 +31,13 @@ public abstract class PedLikelihoodCalcAbs {
                                           Map<Integer, Integer> idConversion, List<PedVertex> descendants1, List<PedVertex> descendants2);
 
     /**
-     * Create IBD feature distribution for every pair of living individuals in prepare.pedigree
+     * Create IBD feature distribution for every pair of living individuals in pedigree
      * Simulate recombination process N times
      **/
     protected Map<String, List<DataPoint>> sampleFeaturesFromInheritanceSpace(Pedigree pedigree, boolean addNoise) {
         Map<String, List<DataPoint>> simDataSets = new HashMap<>();
         for (int i = 1; i <= numOfSimIter; i++) {
-            MyLogger.debug("Simulate recombinations of prepare.pedigree");
+            MyLogger.debug("Simulate recombinations of pedigree");
             pedigree.simulateRecombinations();
 
             MyLogger.debug("Calc pairwise IBD sharing");
@@ -70,7 +70,7 @@ public abstract class PedLikelihoodCalcAbs {
     }
 
     /**
-     * Create IBD feature distribution for every pair of living individuals in prepare.pedigree
+     * Create IBD feature distribution for every pair of living individuals in pedigree
      * Simulate recombination process N times
      **/
     Map<String, List<DataPoint>> sampleFeaturesFromInheritanceSpace(Pedigree p, boolean addNoise, List<PedVertex> descendants1, List<PedVertex> descendants2) {
@@ -78,7 +78,7 @@ public abstract class PedLikelihoodCalcAbs {
         Map<String, List<DataPoint>> simDataSets = new HashMap<>();
 
         for (int i = 1; i <= numOfSimIter; i++) {
-            MyLogger.debug("Simulate recombinations of prepare.pedigree");
+            MyLogger.debug("Simulate recombinations of pedigree");
             p.simulateRecombinations();
 
             MyLogger.debug("Calc pairwise IBD sharing");

@@ -109,7 +109,7 @@ public abstract class RelationHypothesisTester {
 
         for (int possibleMate : possibleMateIDs) {
             MyLogger.info("Possible mate = " + possibleMate);
-            Pedigree p = new Pedigree(ped);//clone prepare.pedigree
+            Pedigree p = new Pedigree(ped);//clone pedigree
             if (possibleMate == newMateID)
                 p.addVertex(possibleMate);
 
@@ -266,7 +266,7 @@ public abstract class RelationHypothesisTester {
     boolean areSibs(int id1, int id2, Pedigree p) {
         if (id1 != id2 && p.getVertex(id1).getFatherId() == p.getVertex(id2).getFatherId() &&
                 p.getVertex(id1).getMotherId() == p.getVertex(id2).getMotherId()) {
-            MyLogger.info("Found sibs in prepare.pedigree " + id1 + " " + id2);
+            MyLogger.info("Found sibs in pedigree " + id1 + " " + id2);
             return true;
         }
         return false;

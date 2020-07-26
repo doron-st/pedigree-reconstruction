@@ -31,7 +31,7 @@ public class PedigreeIBDFitScoreCalculator {
     private static Namespace parseArgs(String[] argv) {
         ArgumentParser parser = ArgumentParsers.newArgumentParser(PedigreeIBDFitScoreCalculator.class.getSimpleName())
                 .defaultHelp(true)
-                .description("Evaluate reconstructed prepare.pedigree fit to IBD input data");
+                .description("Evaluate reconstructed pedigree fit to IBD input data");
 
         parser.addArgument("inferredPedigreeFile");
         parser.addArgument("demographicsFile");
@@ -57,10 +57,10 @@ public class PedigreeIBDFitScoreCalculator {
         }
 
         PedScoreCalc pedScoreCalc = new PedScoreCalc(5, debugThresh, true);
-        MyLogger.important("Calc score of inferred prepare.pedigree");
+        MyLogger.important("Calc score of inferred pedigree");
         pedScoreCalc.calcLoss(inferredPed, ibdGraph);
         double inferredLoss = pedScoreCalc.getMeanLoss();
-        MyLogger.important("Inferred prepare.pedigree loss  = " + (float) inferredLoss + " +- " + (float) pedScoreCalc.getStdLoss());
+        MyLogger.important("Inferred pedigree loss  = " + (float) inferredLoss + " +- " + (float) pedScoreCalc.getStdLoss());
         return inferredLoss;
     }
 

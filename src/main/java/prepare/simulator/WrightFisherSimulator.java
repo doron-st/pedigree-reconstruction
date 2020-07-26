@@ -73,7 +73,7 @@ public class WrightFisherSimulator {
         genders = new boolean[popSize];
         popSize = initialPopSize;
         new File(outDir).mkdirs();
-        File pedFile = new File(outDir + "/prepare.pedigree.ped");
+        File pedFile = new File(outDir + "/pedigree.ped");
         try {
             pedWriter = new PrintWriter(pedFile);
         } catch (FileNotFoundException e) {
@@ -202,10 +202,10 @@ public class WrightFisherSimulator {
     }
 
     private void writeOutputs() {
-        String structName = outDir + "/prepare.pedigree.structure";
-        File ibdIped = new File(outDir + "/prepare.pedigree.iped.ibd");
-        File demFile = new File(outDir + "/prepare.pedigree.demographics");
-        File ibdFile = new File(outDir + "/prepare.pedigree.ibd");
+        String structName = outDir + "/pedigree.structure";
+        File ibdIped = new File(outDir + "/pedigree.iped.ibd");
+        File demFile = new File(outDir + "/pedigree.demographics");
+        File ibdFile = new File(outDir + "/pedigree.ibd");
         try {
             writeIpedIBDFile(genotypes, ibdIped);
             List<PedVertex> lastGen = new ArrayList<>();
