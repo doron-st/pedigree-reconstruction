@@ -22,7 +22,7 @@ public class SibHypothesisTester extends RelationHypothesisTester {
     }
 
     /**
-     * Test all contracted founder nodes of prepare.pedigree for having one of the following relationships:
+     * Test all contracted founder nodes of pedigree for having one of the following relationships:
      * {fullsib,halfsib,parentChild,childParent,other}
      * Add edge between nodes with fullsib as the maximum likelihood prepare.relationship
      */

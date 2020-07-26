@@ -5,7 +5,7 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
 
-public class PedigreeIBDFitScoreCalculatorTest {
+public class PedigreeIBDLossCalculatorTest {
 
     @Test
     public void calcPedigreeIBDScoreEndToEndTest(){
@@ -18,9 +18,9 @@ public class PedigreeIBDFitScoreCalculatorTest {
         double[] expectedScores = new double[]{11.3, 9.3, 7.66};
         int i = 0;
         for(String file : new String[]{inferredPedigreeFile1, inferredPedigreeFile2, inferredPedigreeFile3}) {
-            PedigreeIBDFitScoreCalculator pedigreeIBDFitScoreCalculator = new PedigreeIBDFitScoreCalculator(file, demographicsFile, ibdFile, 0);
-            double score = pedigreeIBDFitScoreCalculator.evaluate();
-            assertEquals(score, expectedScores[i], 0.2);
+            PedigreeIBDLossCalculator pedigreeIBDLossCalculator = new PedigreeIBDLossCalculator(file, demographicsFile, ibdFile, 0);
+            double score = pedigreeIBDLossCalculator.evaluate();
+            assertEquals(score, expectedScores[i], 0.3);
             i++;
         }
 

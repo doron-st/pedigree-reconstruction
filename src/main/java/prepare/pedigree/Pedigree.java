@@ -26,7 +26,7 @@ public class Pedigree {
 
     //clone constructor
     public Pedigree(Pedigree ped) {
-        MyLogger.debug("Cloning prepare.pedigree" + ped);
+        MyLogger.debug("Cloning pedigree" + ped);
         //Add all vertices
         for (PedVertex v : ped.getVertices())
             addVertex(v.getId(), -1, -1, v.isAlive);
@@ -77,14 +77,14 @@ public class Pedigree {
 
         Pedigree subPed = new Pedigree();
 
-        //Add vertices to prepare.pedigree, top->bottom order
+        //Add vertices to pedigree, top->bottom order
         subPed.createPedigreeFromList(desAncestry, enumartionTable);
 
         return subPed;
     }
 
     /**
-     * Calc likelihood of prepare.pedigree
+     * Calc likelihood of pedigree
      */
 
     public void simulateRecombinations() {
@@ -221,7 +221,7 @@ public class Pedigree {
     public List<PedVertex> getDescendants(int vid) {
         PedVertex v = getVertex(vid);
         if (v == null)
-            MyLogger.error("Pedigree:getDescendants:: " + vid + " is not in prepare.pedigree");
+            MyLogger.error("Pedigree:getDescendants:: " + vid + " is not in pedigree");
 
         List<PedVertex> list = new ArrayList<>();
         addDescendantsToList(v, list, false);
@@ -231,7 +231,7 @@ public class Pedigree {
     public List<PedVertex> getAllDescendants(int vid) {
         PedVertex v = getVertex(vid);
         if (v == null)
-            MyLogger.error("Pedigree:getDescendants:: " + vid + " is not in prepare.pedigree");
+            MyLogger.error("Pedigree:getDescendants:: " + vid + " is not in pedigree");
 
         List<PedVertex> list = new ArrayList<>();
         addDescendantsToList(v, list, true);
@@ -267,7 +267,7 @@ public class Pedigree {
     }
 
     public void readFromFile(String filename) {
-        MyLogger.important("Read prepare.pedigree from file " + filename);
+        MyLogger.important("Read pedigree from file " + filename);
         BufferedReader fileReader;
         try {
             fileReader = new BufferedReader(new FileReader(new File(filename)));
@@ -285,7 +285,7 @@ public class Pedigree {
                 int fatherID = Integer.parseInt(nextLineTokenizer.nextToken());
                 int motherID = Integer.parseInt(nextLineTokenizer.nextToken());
 
-                //Living vertices were added first to the prepare.pedigree in construction
+                //Living vertices were added first to the pedigree in construction
                 int isAlive = 0;
                 if(hasVertex(childId) && getVertex(childId).isAlive()) {
                     isAlive = 1;
@@ -311,7 +311,7 @@ public class Pedigree {
         }
 
         //Delete all vertices, as alive information was extracted
-        //Start from an empty prepare.pedigree
+        //Start from an empty pedigree
         vertices.clear();
 
         //Add founders
@@ -336,10 +336,10 @@ public class Pedigree {
     }
 
     /**
-     * Write prepare.pedigree using vertex ids
+     * Write pedigree using vertex ids
      */
     public void writeToFile(File file) throws IOException {
-        MyLogger.important("Writing prepare.pedigree to file: " + file);
+        MyLogger.important("Writing pedigree to file: " + file);
         PrintWriter printWriter = new PrintWriter(file);
         //printWriter.println(String.format("name\tfather\tmother"));
         for (PedVertex v : getVertices()) {
@@ -352,10 +352,10 @@ public class Pedigree {
     }
 
     /**
-     * Write prepare.pedigree using demographic IDs if they exist (Real populations)
+     * Write pedigree using demographic IDs if they exist (Real populations)
      */
     public void writeToFile(File file, Population dem) throws IOException {
-        MyLogger.important("Writing prepare.pedigree to file: " + file);
+        MyLogger.important("Writing pedigree to file: " + file);
         file.getAbsoluteFile().getParentFile().mkdirs();
         PrintWriter printWriter = new PrintWriter(file);
         for (PedVertex v : getVertices()) {

@@ -17,7 +17,7 @@ public class PedigreeReconstructorTest{
         PedigreeReconstructor pedigreeReconstructor = new PedigreeReconstructor(ibdFile, demographicsFile, outPref,
                 false, false, 3);
         Pedigree pedigree = pedigreeReconstructor.reconstruct();
-        assertEquals(350, pedigree.getVertices().size(), 10);
+        assertEquals(350, pedigree.getVertices().size(), 20);
         assertEquals(100, pedigree.getLiving().size());
         assertEquals(88, pedigree.getFounders().size(), 10);
     }

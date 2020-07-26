@@ -31,7 +31,7 @@ public class PedigreeMinDistanceScorer {
 
     public PedAccuracy run() {
         PedAccuracy accCalc = new PedAccuracy();
-        MyLogger.important("Calc score of inferred prepare.pedigree");
+        MyLogger.important("Calc score of inferred pedigree");
         accCalc.calcAccuracy(inferredPed, realPed);
         return accCalc;
     }

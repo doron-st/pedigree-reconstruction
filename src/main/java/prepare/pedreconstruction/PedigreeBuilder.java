@@ -39,7 +39,7 @@ public class PedigreeBuilder {
     }
 
     /**
-     * Main method - using actual prepare.pedigree for IBD sharing estimation
+     * Main method - using actual pedigree for IBD sharing estimation
      */
     public void buildGeneration(Pedigree ped, int gen, Population dem) {
 
@@ -99,7 +99,7 @@ public class PedigreeBuilder {
             sibGrouper = new SiblingGrouper(expendedHalfSibGraph);
             sibGrouper.uniteCommonParentOfHalfSibs(nucFamilies);
         }
-        MyLogger.important("======================Update prepare.pedigree(" + gen + ")=====================");
+        MyLogger.important("======================Update pedigree(" + gen + ")=====================");
         updatePedigreeObj(ped, nucFamilies);
 
         MyLogger.important("=========================Writing output========================");

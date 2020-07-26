@@ -37,7 +37,7 @@ public class PedLikelihoodCalcInheritancePaths extends PedLikelihoodCalcAbs {
         Map<String, List<DataPoint>> simDataSets = null;
         int pairNum = 0;
         //Sample features from inheritance space for all pairs, if needed.
-        //(IBDFeature distributions that were calculated previously for synonymous prepare.pedigree)
+        //(IBDFeature distributions that were calculated previously for synonymous pedigree)
         for (PedVertex v1 : descendants1) {
             if (!v1.isAlive()) continue;//compare only living descendants
             for (PedVertex v2 : descendants2) {

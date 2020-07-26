@@ -19,9 +19,9 @@ public class Contraction {
     List<Vertex> unexpandedNodes = new ArrayList<>();
 
     /**
-     * Create a contraction from the founder prepare.pedigree vertices
+     * Create a contraction from the founder pedigree vertices
      *
-     * @param p prepare.pedigree
+     * @param p pedigree
      */
     public Contraction(Pedigree p) {
 
